@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- <link href="css/base.css" rel="stylesheet"> -->
+<script type="text/javascript" src="js/zepto.js"></script>
+<script type="text/javascript" src="js/popup.js"></script>
+<title>Chrome Twilio Phone - Popup</title>
+</head>
+<body class="popup">
+<h1 id="status"></h1>
+<div id="_ctp_info"></div>
+
+<!-- Incoming Call -->
+<fieldset id="_ctp_take_form" style="display:none;">
+<legend>Answer Call</legend>
+<div class="cmd">
+<input id="take-call" type="button" value="Take">
+</div>
+</fieldset>
+
+<!-- Outgoing Call -->
+<fieldset id="_ctp_call_form" style="display:none;">
+<legend>Place a Call</legend>
+<table>
+<tr>
+<td><label for="_ctp_call_dial">Dial</label></td>
+<td><input id="_ctp_call_dial" name="_ctp_dial" type="text" value=""></td>
+<td><input id="_ctp_call_call" type="button" value="Call"></td>
+</table>
+<!--
+<div id="_ctp_dial_pad">
+    <table>
+    <tr>
+    <td><input type="button" value="1" id="button1"></td>
+    <td><input type="button" value="2" id="button2"></td>
+    <td><input type="button" value="3" id="button3"></td>
+    </tr>
+    <tr>
+    <td><input type="button" value="4" id="button4"></td>
+    <td><input type="button" value="5" id="button5"></td>
+    <td><input type="button" value="6" id="button6"></td>
+    </tr>
+    <tr>
+    <td><input type="button" value="7" id="button7"></td>
+    <td><input type="button" value="8" id="button8"></td>
+    <td><input type="button" value="9" id="button9"></td>
+    </tr>
+    <tr>
+    <td><input type="button" value="*" id="buttonstar"></td>
+    <td><input type="button" value="0" id="button0"></td>
+    <td><input type="button" value="#" id="buttonpound"></td>
+    </tr>
+    </table>
+</div>
+<div class="cmd">
+<input id="_ctp_call" name="_ctp_exec" type="button" value="Call">
+<input name="_ctp_exec" onclick="bgp.ctp.kill();" type="button" value="Kill">
+</div>
+-->
+</fieldset>
+
+<!-- Active Call -->
+<fieldset id="_ctp_talk_form" style="display:none;">
+<legend>Active Call Control</legend>
+<div class="cmd">
+<input id="_ctp_call_kill" onclick="" type="button" value="Hang Up">
+</div>
+</fieldset>
+
+<!-- Sending a Text -->
+<fieldset id="_ctp_text_form" style="display:none;">
+<legend>Send a Text</legend>
+<table>
+<tr>
+<td><label for="_ctp_text_dial">Dial</label></td>
+<td><input id="_ctp_text_dial" type="text" value=""></td>
+</tr>
+<tr>
+<td><label for="_ctp_text_body">Text</label></td>
+<td><textarea id="_ctp_text_body"></textarea></td>
+</tr>
+</table>
+<div class="cmd">
+<input id="_ctp_text_send" type="button" value="Send">
+<input id="_ctp_text_list" type="button" value="Last 10">
+<input id="logs-list" type="button" value="Logs">
+</div>
+</fieldset>
+
+</body>
+</html>

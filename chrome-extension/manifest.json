@@ -1,0 +1,29 @@
+{
+	"name": "Browser Phone",
+	"short_name": "Telephone",
+	"description": "Enables the Twilio Clients in your always on Chrome browser",
+	"version": "2016.13.2141",
+	"manifest_version": 2,
+	"minimum_chrome_version": "40.0.0",
+	"homepage_url": "http://edoceo.com/creo/ctp",
+	"offline_enabled": false,
+	"incognito": "not_allowed",
+	"icons": {
+		"16":"img/icon16.png",
+		"48":"img/icon48.png",
+		"128":"img/icon128.png"
+	},
+	"content_security_policy": "media-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com; object-src 'self'; script-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com;",
+	"background": {
+		"page": "background.html"
+	},
+	"browser_action": {
+		"default_title": "Browser Phone",
+		"default_icon": "img/icon19.png"
+	},
+	"options_ui" : {
+		"chrome_style": true,
+		"page": "options.html"
+	},
+	"permissions": []
+}

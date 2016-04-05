@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- <link href="css/chrome-options.css" rel="stylesheet"> -->
+<link href="css/base.css" rel="stylesheet">
+<script type="text/javascript" src="js/zepto.js"></script>
+<script type="text/javascript" src="js/options.js"></script>
+<title>Chrome Twilio Phone - Options</title>
+</head>
+<body class="options">
+<header>
+	<div id="info"></div>
+	<div id="warn"></div>
+</header>
+
+<!--
+<p>Input the information here, data is automatically saved, just close this tab when done.</p>
+-->
+
+<fieldset>
+<legend>Twilio Account Information</legend>
+
+<p>These two options can be found on your <a href="https://www.twilio.com/user/account" target="_blank">Twilio Dashboard</a>.</p>
+<div>
+<label>Account SID</label><input id="_ctp_user_sid" name="_ctp_user_sid" type="text" value="">
+</div>
+
+<div>
+<label>Auth Token</label><input id="_ctp_auth_tid" name="_ctp_auth_tid" type="text" value="">
+</div>
+
+</fieldset>
+
+<fieldset>
+<legend>Application Details</legend>
+
+<div>
+<p>Collect the SID from <strong>your</strong> <a href="https://www.twilio.com/user/account/apps" target="_blank">Twilio Application</a> and input it here.</p>
+<label>Application SID</label>
+	<input id="_ctp_prog_sid" name="_ctp_prog_sid" type="text" value="">
+</div>
+
+<div>
+<label>Device ID</label><input id="_ctp_plug_did" name="_ctp_plug_did" type="text" value="">
+<p>This will become the common name of this device running this plug-in.</p>
+</div>
+
+</fieldset>
+
+<fieldset>
+	<legend>Sounds</legend>
+	<label><input checked id="_ctp_bell_i" type="checkbox" value="1"> Incoming</label>
+	<label><input checked id="_ctp_bell_o" type="checkbox" value="1"> Outgoing</label>
+	<label><input checked id="_ctp_bell_t" type="checkbox" value="1"> Terminate</label>
+</fieldset>
+
+<fieldset>
+<legend>Session Identifier</legend>
+<input id="_ctp_sess_uid" type="text" value=""><input id="_ctp_cmd_init" type="button" value="Reload">
+</fieldset>
+
+<div class="cmd"><button id="cmd-done">Done</button></div>
+
+<footer>
+<div>
+	<a href="http://edoceo.com/creo/ctp" target="_blank">Browser Phone</a>
+	| <a href="http://vbx.io/" target="_blank">VBX</a>
+</div>
+<div><small>
+<a href="https://thenounproject.com/term/telephone/14950" target="_blank">Phone Icon</a>
+by <a href="https://thenounproject.com/foppa" target="_blank">Benny Forsberg</a>
+</small></div>
+</footer>
+
+</body>
+</html>

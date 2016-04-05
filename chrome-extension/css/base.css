@@ -1,0 +1,84 @@
+/*
+	Style for Browser Phone
+*/
+
+body {
+	-webkit-user-select: none;
+}
+
+header {
+	margin: 0;
+	padding: 1em;
+}
+
+
+h1 {
+	border-bottom: 1px solid #EEE;
+}
+
+
+fieldset {
+	margin: 0 0.25em 2em 0.25em;
+}
+
+legend {
+	font-weight: bold;
+	margin: 4px 8px;
+	padding:0px 16px;
+}
+
+footer {
+	background: #f0f0f0;
+	border-top: 1px solid #333;
+	bottom: 0;
+	margin: 0;
+	padding: 0.5em;
+	position: fixed;
+	width: 100%;
+}
+
+footer a { color:#000; }
+
+
+.cmd {
+	border-top: 1px solid #EEE;
+	padding: 0 32px;
+}
+
+#info { text-align:center; }
+#warn { background:rgba(192,0,0,53); display:none; padding:8px; text-align:center; } 
+
+#_ctp_dial_pad input[type=button] {
+	padding:4px 8px;
+}
+
+/**
+	Options Page
+*/
+body.options {
+	margin: 0 0 5em 0;
+}
+body.options fieldset label {
+	display: block;
+}
+body.options input[type=text] {
+	width: 100%;
+}
+body.options input.diff {
+	border-bottom-color: #ff0000;
+}
+
+/**
+	Popup Page
+*/
+body.popup {
+	margin: 0;
+	min-width: 320px;
+	padding: 0;
+}
+
+body.popup fieldset { border:none; }
+
+body.popup td {
+	white-space:nowrap;
+}
