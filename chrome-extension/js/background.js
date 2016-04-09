@@ -201,9 +201,16 @@ document.addEventListener("DOMContentLoaded", function () {
 	Twilio.Device.connect(function (c) {
 		l('Twilio.Device.connect()');
 		ctp.stat('talk', [255, 133, 0, 192], c.parameters.From);
-		chrome.tabs.create({
-			url: 'https://edoceo.com/imperium.git/search?q=' + c.parameters.From
-		});
+
+		// Open the Requested Page
+		var url = localStorage.getItem('_open_url');
+		if ((undefined !== url) && (url.length > 5)) {
+			url = url.replace('{PHONE}', c.parameters.From);
+			chrome.tabs.create({
+				url: url,
+			});
+		}
+
 	});
 
 	// Disconnected

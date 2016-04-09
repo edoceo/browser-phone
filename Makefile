@@ -1,5 +1,21 @@
+#
+# WeedTraQR Makefile
+#
 
-chrome-package: vendor_js
+#
+# Help, the default target
+help:
+	@echo
+	@echo "You must supply a make command"
+	@echo
+	@grep -ozP "^#\n#.*\n[a-zA-Z_-]+:" $(MAKEFILE_LIST) \
+		| awk '/[a-zA-Z_-]+:/ { printf " \033[0;49;31m%-15s\033[0m%s\n", $$1, gensub(/^# /, "", "", x) }; { x=$$0 }' \
+		| sort
+	@echo
+
+#
+# Build a Package for Chrome
+chrome-package: js-vendor
 	cd "chrome-extension"
 	zip --recurse-paths \
 		../chrome-extension.zip \
@@ -12,8 +28,9 @@ chrome-package: vendor_js
 		./img/icon*.png \
 		./js/*.js
 
-
-vendor_js:
+#
+# Get all the necessary Vendor JS
+js-vendor:
 	mkdir -p chrome-extension/js/vendor
 
 	# JWT

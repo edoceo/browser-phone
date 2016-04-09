@@ -21,6 +21,7 @@ var cto = {
         bgp.setData('_auth_tid', $('#_ctp_auth_tid').val());
         bgp.setData('_prog_sid', $('#_ctp_prog_sid').val());
         bgp.setData('_plug_did', $('#_ctp_plug_did').val());
+        bgp.setData('_open_url', $('#_ctp_open_url').val());
 
         bgp.setData('bell_i', $('#_ctp_bell_i').attr('checked'));
         bgp.setData('bell_o', $('#_ctp_bell_o').attr('checked'));
@@ -38,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#_ctp_auth_tid').val(bgp.getData('_auth_tid'));
     $('#_ctp_prog_sid').val(bgp.getData('_prog_sid'));
     $('#_ctp_plug_did').val(bgp.getData('_plug_did'));
+    $('#_ctp_open_url').val(bgp.getData('_open_url'));
 
     $('#_ctp_bell_i').attr('checked',bgp.getData('bell_i'));
     $('#_ctp_bell_t').attr('checked',bgp.getData('bell_o'));
@@ -50,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         $(this).addClass('diff');
         if (cto.t) window.clearTimeout(cto.t);
-        cto.t = window.setTimeout(cto.s,432);
+        cto.t = window.setTimeout(cto.s, 250);
 
     });
 
