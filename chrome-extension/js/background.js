@@ -6,11 +6,16 @@
 
 var Color = {
 	Red: [255, 0, 0, 192],
+	Orange: [255, 116, 0, 192 ], // [255, 133, 0, 192]
 	Green: [0, 192, 0, 192],
 	Grey: [56, 56, 56, 56],
 };
 
 var Connection = null;
+
+var Session = {
+	token: 'none',
+};
 
 //function modeFail()
 //{
@@ -26,9 +31,38 @@ function setData(k, v)
 	return localStorage.setItem(k, v);
 }
 
-var tdToken = false;
+/**
+	Answer the Call
+*/
+function callAnswer()
+{
+	Connection.want++;
+	Connection.accept(); // no return value
 
-// 
+	if (Connection.want >= 2) {
+		ctp.stat('fail', Color.Red, 'Cannot Accept; likely due to Media Permissions');
+		return false;
+	}
+
+	return true;
+
+}
+
+function callIgnore()
+{
+	Connection.want = -1;
+	Connection.ignore();
+
+	ctp.stat('drop', Color.Grey, 'Ignored');
+	setTimeout(function() {
+		ctp.init();
+	}, 500);
+
+	return true;
+
+}
+
+//
 var _app = 'Chrome Twilio Phone';
 var l = function(x) { if (window.console) console.log(x); };
 
@@ -70,14 +104,14 @@ var ctp = {
 		if (!localStorage.call_dial_last) localStorage.call_dial_last = '';
 		if (!localStorage.call_text_last) localStorage.call_text_last = '';
 
-		// ctp.stat('init', Color.Red);
-
 		if (!localStorage._plug_did) {
 			ctp.stat('name', Color.Red, 'Configure Client Name');
 			localStorage._option_warn = 'Please provide a Twilio Authentication Information';
 			chrome.tabs.create({'url': 'options.html'});
 			return;
 		}
+
+		ctp.stat('init', Color.Grey, 'connecting');
 
 		// Web Token Request
 		var wtr = {};
@@ -86,12 +120,29 @@ var ctp = {
 		wtr.exp = Math.round(new Date().getTime() / 1000) + 3600; // Now + 1 Hour
 
 		var tok = new jwt.WebToken(JSON.stringify(wtr), JSON.stringify({typ: 'JWT', alg: 'HS256'}));
-		tdToken = tok.serialize(localStorage._auth_tid);
-		Twilio.Device.setup(tdToken, {
+		Session.token = tok.serialize(localStorage._auth_tid);
+
+		var td = Twilio.Device.setup(Session.token, {
 			debug: true
 		});
 
+		var s = Twilio.Device.status();
+		console.log('ctp.init status = ' + s);
+
+		switch (s) {
+		case 'ready':
+			ctp.stat('idle', Color.Green, 'Ready');
+			break;
+		default:
+			ctp.stat('init', Color.Orange, s);
+			break;
+		};
+
 	},
+
+	/**
+
+	*/
 	kill: function ()
 	{
 		if (Connection) {
@@ -109,28 +160,30 @@ var ctp = {
 //			}
 //		);
 //	},
+
+	/**
+		Change Button Status
+	*/
 	stat: function (n, c, t) // Note, Colour, Info Text
 	{
-		l('ctp.stat(' + n + ',' + c + ',' + t + ')'); //  + Twilio.Device.status());
-		if (!t) t = _app;
-		chrome.browserAction.setTitle({title: t });
-		chrome.browserAction.setBadgeText({text: n});
-		chrome.browserAction.setBadgeBackgroundColor({color: c});
+		l('ctp.stat(' + n + ',' + c + ',' + t + ')');
+
+		if (!t) {
+			t = _app;
+		}
+
+		chrome.browserAction.setTitle({
+			title: t
+		});
+		chrome.browserAction.setBadgeText({
+			text: n
+		});
+		chrome.browserAction.setBadgeBackgroundColor({
+			color: c
+		});
 		//chrome.browserAction.setIcon({
         //    path: "img/phone-idle.png",
         //});
-	},
-
-	take: function()
-	{
-		Connection.want++;
-		Connection.accept(); // no return value
-		l('ctp.take( ' + Connection.status() + ') @' + Connection.want);
-		if (Connection.want >= 2) {
-			ctp.stat('fail', Color.Red, 'Cannot Accept; likely due to Media Permissions');
-			return false;
-		}
-		return true;
 	},
 
 	/**
@@ -166,41 +219,52 @@ var ctp = {
 	}
 };
 
-chrome.browserAction.onClicked.addListener(function(tab) {
-
-	if ('good' != localStorage.getItem('mic-access')) {
-		chrome.tabs.create({'url': 'options.html'});
-	} else {
-		chrome.browserAction.setPopup({ popup: "popup.html" });
-	}
-
-});
+/* Dumb Idea */
+/**
+	Prompt for Options or the Popup if set properly
+*/
+//chrome.browserAction.onClicked.addListener(function(tab) {
+//
+//	if ('good' != localStorage.getItem('mic-access')) {
+//		chrome.tabs.create({'url': 'options.html'});
+//	} else {
+//		chrome.browserAction.setPopup({
+//			popup: "popup.html"
+//		});
+//	}
+//
+//});
 
 
 // Init my Thing
 document.addEventListener("DOMContentLoaded", function () {
+
+	console.log('BrowserPhone!DOMContentLoaded');
 
 	ctp.init();
 
 	// Ready Handler
 	Twilio.Device.ready(function(d) {
 		console.log('Twilio.Device.ready(' + d + ')');
-		Connection = null;
 		ctp.stat('idle', Color.Green, 'Ready');
 	});
 
 	// Incoming
 	Twilio.Device.incoming(function (x) {
-		// l('Twilio.Device.incoming()');
+
+		console.log('Twilio.Device.incoming()');
 		Connection = x;
 		Connection.want = 0;
-		ctp.stat('ring', [255, 0, 0, 192], 'From: ' + Connection.parameters.From);
+		ctp.stat('ring', Color.Red, 'From: ' + Connection.parameters.From);
+
 	});
 
 	// Connected
 	Twilio.Device.connect(function (c) {
-		l('Twilio.Device.connect()');
-		ctp.stat('talk', [255, 133, 0, 192], c.parameters.From);
+
+		console.log('Twilio.Device.connect()');
+
+		ctp.stat('talk', Color.Orange, c.parameters.From);
 
 		// Open the Requested Page
 		var url = localStorage.getItem('_open_url');
@@ -215,23 +279,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Disconnected
 	Twilio.Device.disconnect(function (x) {
-		l('Twilio.Device.disconnect()');
+
+		console.log('Twilio.Device.disconnect()');
+
 		ctp.stat('done', Color.Grey);
-		ctp.kill();
+		// ctp.kill();
+
 		window.setTimeout(function() {
 			ctp.init();
 		}, 1);
+
 	});
 
 	// Cancel - incoming connection is canceled by the caller before it is accepted
 	Twilio.Device.cancel(function(x) {
+
 		console.log('Twilio.Device.cancel()');
-		Connection = false;
 		ctp.kill();
 		ctp.stat('drop', Color.Red);
 		window.setTimeout(function() {
 			ctp.init();
 		}, 1);
+
 	});
 
 //	// Offline Event
@@ -240,16 +309,22 @@ document.addEventListener("DOMContentLoaded", function () {
 //		ctp.kill();
 //		ctp.stat('...',[56, 56, 56, 128]);
 //	});
-//	
-//	
-//	// Token has expired => Make a new one
+
+	/**
+		Token has expired => Make a new one
+	*/
 	Twilio.Device.error(function (e) {
-		c = false;
-		// l('Twilio.Device.error(' + e.message + ')');
+
+		console.log('Twilio.Device.error(' + e.message + ')');
+
+		Connection = null;
+
 		ctp.kill();
-		ctp.stat('fail',[255, 0, 0, 192],e.message);
-		// window.setTimeout(function() { ctp.init(); }, ctp.w * ctp.ec );
-		ctp.ec += 0.5;
+		ctp.stat('fail', Color.Red,e.message);
+
+		window.setTimeout(function() {
+			ctp.init();
+		}, 2000);
 	});
 });
 

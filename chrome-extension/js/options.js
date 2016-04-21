@@ -45,8 +45,10 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#_ctp_bell_t').attr('checked',bgp.getData('bell_o'));
     $('#_ctp_bell_o').attr('checked',bgp.getData('bell_t'));
 
-    $('#_ctp_sess_uid').val(bgp.ctp.a);
-    $('#_ctp_cmd_init').on('click',function() { bgp.ctp.init(); });
+    $('#_ctp_sess_uid').val(bgp.Session.token);
+    $('#_ctp_cmd_init').on('click', function() {
+		bgp.ctp.init();
+	});
 
     $('input[type=text], input[type=checkbox]').on('keyup',function(e) {
 

@@ -15,9 +15,8 @@ help:
 
 #
 # Build a Package for Chrome
-chrome-package: js-vendor
-	cd "chrome-extension"
-	zip --recurse-paths \
+chrome-extension.zip: js-vendor
+	cd "chrome-extension" && zip --recurse-paths \
 		../chrome-extension.zip \
 		./manifest.json \
 		./background.html \
@@ -26,6 +25,7 @@ chrome-package: js-vendor
 		./css/chrome-options.css \
 		./css/base.css \
 		./img/icon*.png \
+		./js/vendor/*.js \
 		./js/*.js
 
 #

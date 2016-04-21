@@ -41,8 +41,7 @@ footer a { color:#000; }
 
 
 .cmd {
-	border-top: 1px solid #EEE;
-	padding: 0 32px;
+	padding: 0.25em 2em;
 }
 
 #info { text-align:center; }
@@ -77,8 +76,6 @@ body.popup {
 	padding: 0;
 }
 
-body.popup fieldset { border:none; }
-
 body.popup td {
-	white-space:nowrap;
+	white-space: nowrap;
 }

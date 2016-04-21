@@ -104,13 +104,29 @@ document.addEventListener("DOMContentLoaded", function () {
         $('#_ctp_talk_form').hide();
         break;
     case 'ready/pending':
+
+		$('#status').html('Ring! Ring!');
         $('#_ctp_take_form').show();
         $('#_ctp_talk_form').show();
-        $('#take-call').on('click',function() {
-            bgp.l('take-call-click');
+
+		var url = bgp.getData('_open_url');
+		if ((undefined !== url) && (url.length > 5)) {
+			url = url.replace('{PHONE}', bgp.Connection.parameters.From);
+			$('#_take_link').attr('href', url);
+			$('#_take_link').text(bgp.Connection.parameters.From);
+		}
+
+        $('#call-answer').on('click',function() {
+            console.log('take-call-click');
             bgp.ctp.take();
             window.close();
         });
+
+        $('#call-ignore').on('click',function() {
+            bgp.ctp.callIgnore();
+            // window.close();
+        });
+
         break;
     case 'busy': // In Call
         $('#info').html('Talk: ' + bgp.ctp.c.parameters.To);
