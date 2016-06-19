@@ -45,7 +45,7 @@ footer a { color:#000; }
 }
 
 #info { text-align:center; }
-#warn { background:rgba(192,0,0,53); display:none; padding:8px; text-align:center; } 
+#warn { background:rgba(192,0,0,53); display:none; padding:8px; text-align:center; }
 
 #_ctp_dial_pad input[type=button] {
 	padding:4px 8px;

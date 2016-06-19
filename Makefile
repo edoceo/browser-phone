@@ -40,5 +40,5 @@ js-vendor:
 	curl -qs https://raw.githubusercontent.com/bitwiseshiftleft/sjcl/1.0.3/sjcl.js > chrome-extension/js/vendor/sjcl.js
 
 	# Zepto
-	curl -qs https://raw.githubusercontent.com/madrobby/zepto/v1.1.6/src/zepto.js > chrome-extension/js/vendor/zepto.js
+	curl -qs http://zeptojs.com/zepto.js > chrome-extension/js/vendor/zepto.js
 

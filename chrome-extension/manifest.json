@@ -2,7 +2,7 @@
 	"name": "Browser Phone",
 	"short_name": "Telephone",
 	"description": "Enables the Twilio Clients in your always on Chrome browser",
-	"version": "2016.16.1500",
+	"version": "2016.24.1400",
 	"manifest_version": 2,
 	"minimum_chrome_version": "40.0.0",
 	"homepage_url": "http://edoceo.com/creo/ctp",
@@ -22,9 +22,6 @@
 		"default_popup": "popup.html",
 		"default_title": "Browser Phone"
 	},
-	"options_ui" : {
-		"chrome_style": true,
-		"page": "options.html"
-	},
+	"options_page": "options.html",
 	"permissions": []
 }

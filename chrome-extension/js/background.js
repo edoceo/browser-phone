@@ -1,12 +1,14 @@
 /**
-	This code Copyright 2011-2012 Edoceo, Inc
+	Background Operator
 */
 
 'use strict';
 
+// These are all exposed to the Options and Popup pages from the BGP object
+
 var Color = {
 	Red: [255, 0, 0, 192],
-	Orange: [255, 116, 0, 192 ], // [255, 133, 0, 192]
+	Orange: [255, 116, 0, 192], // [255, 133, 0, 192]
 	Green: [0, 192, 0, 192],
 	Grey: [56, 56, 56, 56],
 };
@@ -81,8 +83,8 @@ var ctp = {
 		// var u = 'https://' + localStorage['_user_sid'] + ':' + localStorage._auth_tid + '@api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid'] + '/Calls.json';
 		// var p = {
 		//	 'ApplicationSid':localStorage['_prog_sid'],
-		//	 'From':'+12062826500', // 'client:' + localStorage['_plug_did'], // From number the Callee Sees
-		//	 'To':'+12063918470'
+		//	 'From':'+12065555555', // 'client:' + localStorage['_plug_did'], // From number the Callee Sees
+		//	 'To':'+12065555555'
 		// };
 		// window.console && console.log('ctp.post(' + u + ')');
 		// $.post(u,p);
@@ -107,7 +109,8 @@ var ctp = {
 		if (!localStorage._plug_did) {
 			ctp.stat('name', Color.Red, 'Configure Client Name');
 			localStorage._option_warn = 'Please provide a Twilio Authentication Information';
-			chrome.tabs.create({'url': 'options.html'});
+			// @todo see if my tab is open already?
+			// chrome.tabs.create({'url': 'options.html'});
 			return;
 		}
 
@@ -182,8 +185,8 @@ var ctp = {
 			color: c
 		});
 		//chrome.browserAction.setIcon({
-        //    path: "img/phone-idle.png",
-        //});
+		//	path: "img/phone-idle.png",
+		//});
 	},
 
 	/**
@@ -219,21 +222,25 @@ var ctp = {
 	}
 };
 
-/* Dumb Idea */
 /**
 	Prompt for Options or the Popup if set properly
 */
-//chrome.browserAction.onClicked.addListener(function(tab) {
-//
-//	if ('good' != localStorage.getItem('mic-access')) {
-//		chrome.tabs.create({'url': 'options.html'});
-//	} else {
-//		chrome.browserAction.setPopup({
-//			popup: "popup.html"
-//		});
-//	}
-//
-//});
+chrome.browserAction.onClicked.addListener(function(tab) {
+
+	//if ('good' != localStorage.getItem('mic-access')) {
+	var arg = {
+		url: 'options.html'
+	};
+
+	chrome.tabs.create(arg);
+
+	//} else {
+	//	chrome.browserAction.setPopup({
+	//		popup: "popup.html"
+	//	});
+	//}
+
+});
 
 
 // Init my Thing
