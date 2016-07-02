@@ -124,12 +124,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		$('#call-answer').on('click',function() {
 			console.log('take-call-click');
-			bgp.ctp.take();
+			bgp.callAnswer();
 			window.close();
 		});
 
 		$('#call-ignore').on('click',function() {
-			bgp.ctp.callIgnore();
+			bgp.callIgnore();
 			// window.close();
 		});
 
