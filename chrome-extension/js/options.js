@@ -65,8 +65,4 @@ document.addEventListener("DOMContentLoaded", function () {
 		bgp.setData('_option_warn', false);
 	}
 
-	$('#cmd-done').on('click',function() {
-		window.close();
-	});
-
 });

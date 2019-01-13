@@ -7,17 +7,28 @@ var bgp = chrome.extension.getBackgroundPage();
 // Init my Thing
 document.addEventListener("DOMContentLoaded", function () {
 
-	// $('#_ctp_take_form').hide();
+	if (bgp.NumberList) {
+		if (bgp.NumberList.length > 0) {
+			$('#outgoing-number-list').empty();
+			bgp.NumberList.forEach(function(v) {
+				$('#outgoing-number-list').append('<option value="' + v.e164 + '">' + v.nice + '</option>')
+			});
+		}
+	}
+
+	// $('#_ctp_incoming_form').hide();
 	// $('#_ctp_call_form').hide();
 	// $('#_ctp_text_form').hide();
 	// $('#_ctp_talk').hide();
 
 	$('#_ctp_call_dial').val( bgp.getData('call_dial_last') );
-	$('#_ctp_text_dial').val( bgp.getData('text_dial_last') );
 
 	$('#_ctp_call_call').on('click',function() {
-		bgp.setData('call_dial_last', $('#_ctp_call_dial').val());
-		bgp.ctp.call( $('#_ctp_call_dial').val() );
+		var s = $('#outgoing-number-list').val();
+		var d = $('#_ctp_call_dial').val();
+		bgp.setData('call_outgoing_last', s);
+		bgp.setData('call_dial_last', d);
+		bgp.ctp.call(s, d);
 		//window.close();
 	});
 	$('#_ctp_call_kill').on('click',function() {
@@ -26,12 +37,18 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	$('#_ctp_text_send').on('click',function() {
+
+		var s = $('#outgoing-number-list').val();
+		var d = $('#_ctp_call_dial').val();
+		var t = $('#_ctp_text_body').val();
+
 		$('#_ctp_text_send').attr('disabled',true);
 		$('#_ctp_info').html('Sending...');
-		bgp.ctp.text( $('#_ctp_text_dial').val(), $('#_ctp_text_body').val(), function() {
+
+		bgp.ctp.text(s, d, t, function() {
 			$('#_ctp_info').html('Text Sent');
 			$('#_ctp_text_text').val('');
-			$('#_ctp_text_send').attr('disabled',false);
+			$('#_ctp_text_send').removeAttr('disabled');
 			window.close();
 		});
 	});
@@ -39,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	$('#_ctp_text_list').on('click',function() {
 		$('#_ctp_info').html('Loading...');
 		$('#_ctp_call_form').hide();
-		$('#_ctp_talk_form').hide();
 		$('#_ctp_text_form').hide();
 		$('#_ctp_text_send').attr('disabled',true);
 		bgp.ctp.text_list(function(res,ret,jhr) {
@@ -61,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	$('#logs-list').on('click',function() {
 		$('#_ctp_info').html('Loading...');
 		$('#_ctp_call_form').hide();
-		$('#_ctp_talk_form').hide();
 		$('#_ctp_text_form').hide();
 		bgp.ctp.logs_list(function(res,ret,jhr) {
 			if (res.notifications) {
@@ -100,20 +115,21 @@ document.addEventListener("DOMContentLoaded", function () {
 	} catch (e) {
 		// Ignore
 	}
-	console.log('PopuP Status: ' + s);
+	console.log('Popup Status: ' + s);
+
+	$('#_ctp_dial_pad').hide();
 
 	switch (s) {
 	case 'ready':
+	case 'ready/closed':
 		$('#status').html('Ready');
+		$('#_ctp_incoming_form').hide();
 		$('#_ctp_call_form').show();
 		$('#_ctp_text_form').show();
-		$('#_ctp_talk_form').hide();
 		break;
 	case 'ready/pending':
-
 		$('#status').html('Ring! Ring!');
-		$('#_ctp_take_form').show();
-		$('#_ctp_talk_form').show();
+		$('#_ctp_incoming_form').show();
 
 		var url = bgp.getData('_open_url');
 		if ((undefined !== url) && (url.length > 5)) {
@@ -137,21 +153,17 @@ document.addEventListener("DOMContentLoaded", function () {
 	case 'busy': // In Call
 		$('#info').html('Talk: ' + bgp.ctp.Connection.parameters.To);
 		// $('#_ctp_call_form').hide();
-		$('#_ctp_talk_form').show();
 		break;
 	case 'busy/open': // In Call
-		$('#_ctp_talk_form').show();
 		break;
 //	case 410: // Dropped
 //		$('#_ctp_call').show();
 //		break;
 	case 'offline': // Offline
-		$('#_ctp_info').html('Try disabling the extension for a few minutes to clear out Flash/Twilio dangling connections');
+		$('#_ctp_info').html('Try disabling the extension for a few minutes to clear out dangling connections');
 		break;
 	default:
-		$('#_ctp_info').html('Configure Options');
-		// alert('What to do with: ' + s);
-		// $('#_ctp_info').html('What! ' . bgp.Twilio.Device.status());
+		$('#_ctp_info').html('Configure Options' + s);
 		break;
 	}
 	// case 'busy':

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="css/chrome-options.css" rel="stylesheet">
-<link href="css/base.css" rel="stylesheet">
-<script type="text/javascript" src="js/vendor/zepto.js"></script>
+<link rel="stylesheet" href="vendor/bootstrap.min.css">
+<link rel="stylesheet" href="css/base.css">
+<script type="text/javascript" src="vendor/zepto.min.js"></script>
 <script type="text/javascript" src="js/options.js"></script>
-<title>Chrome Twilio Phone - Options</title>
+<title>Browser Phone - Options</title>
 </head>
 <body class="options">
 <header>
@@ -17,67 +17,101 @@
 <p>Input the information here, data is automatically saved, just close this tab when done.</p>
 -->
 
-<fieldset>
-<legend>Twilio Account Information</legend>
+<div class="container">
 
+<h2>Twilio Account Information</h2>
+<div class="row">
+	<div class="col">
+		<label>Account SID</label>
+		<input class="form-control" id="_ctp_user_sid" name="_ctp_user_sid" type="text" value="">
+	</div>
+	<div class="col">
+		<label>Auth Token</label>
+		<input class="form-control" id="_ctp_auth_tid" name="_ctp_auth_tid" type="text" value="">
+	</div>
+</div>
 <p>These two options can be found on your <a href="https://www.twilio.com/user/account" target="_blank">Twilio Dashboard</a>.</p>
-<div>
-<label>Account SID</label><input id="_ctp_user_sid" name="_ctp_user_sid" type="text" value="">
-</div>
 
-<div>
-<label>Auth Token</label><input id="_ctp_auth_tid" name="_ctp_auth_tid" type="text" value="">
-</div>
 
-</fieldset>
-
-<fieldset>
-<legend>Application Details</legend>
-
-<div>
-<p>Collect the SID from <strong>your</strong> <a href="https://www.twilio.com/user/account/apps" target="_blank">Twilio Application</a> and input it here.</p>
-<label>Application SID</label>
-	<input id="_ctp_prog_sid" name="_ctp_prog_sid" type="text" value="">
-</div>
-
-<div>
-<label>Device ID</label><input id="_ctp_plug_did" name="_ctp_plug_did" type="text" value="">
-<p>This will become the common name of this device running this plug-in.</p>
-</div>
-
-<div>
-	<label>Open on Answer</label>
-	<input id="_ctp_open_url" name="_ctp_open_url" placeholder="https://something/cool?q={PHONE}" type="text" value="">
-	<p>Open this page when the call is answered, replacing {PHONE}.</p>
+<h2>Application Details</h2>
+<div class="row">
+	<div class="col">
+		<div class="form-group">
+			<label>Device ID</label>
+			<input class="form-control" id="_ctp_plug_did" name="_ctp_plug_did" type="text" value="">
+			<p>This will become the common name of this device running this plug-in.</p>
+		</div>
+	</div>
+	<div class="col">
+		<div class="form-group">
+			<label>Application SID</label>
+			<input class="form-control" id="_ctp_prog_sid" name="_ctp_prog_sid" type="text" value="">
+			<p>Collect the SID from <strong>your</strong> <a href="https://www.twilio.com/console/voice/runtime/twiml-apps" target="_blank">Twilio Application</a> and input it here.</p>
+		</div>
+	</div>
+	<div class="col">
+		<div class="form-group">
+			<label>Application SID</label>
+			<input class="form-control" id="_ctp_prog_sid" name="_ctp_prog_sid" type="text" value="">
+			<p>Collect the SID from <strong>your</strong> <a href="https://www.twilio.com/console/voice/runtime/twiml-apps" target="_blank">Twilio Application</a> and input it here.</p>
+		</div>
+	</div>
 </div>
 
 
-</fieldset>
+<h3>Options</h3>
+<div class="row">
+	<div class="col">
+		<label>Open on Answer</label>
+		<div class="input-group">
+			<input class="form-control" id="_ctp_open_url" name="_ctp_open_url" placeholder="https://something/cool?q={PHONE}" type="text" value="">
+			<div class="input-group-append">
+				<button class="btn btn-outline-secondary" type="button">Test</button>
+			</div>
+		</div>
+		<p>Open this page when the call is answered, replacing {PHONE} with the inbound caller.</p>
+	</div>
+	<div class="col">
+		<label>Sounds</label>
+		<div>
+		<div class="btn-group">
+			<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_i" type="checkbox" value="1"> Incoming</label>
+			<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_o" type="checkbox" value="1"> Outgoing</label>
+			<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_t" type="checkbox" value="1"> Terminate</label>
+		</div>
+		</div>
+	</div>
+</div>
 
-<fieldset>
-	<legend>Sounds</legend>
-	<label><input checked id="_ctp_bell_i" type="checkbox" value="1"> Incoming</label>
-	<label><input checked id="_ctp_bell_o" type="checkbox" value="1"> Outgoing</label>
-	<label><input checked id="_ctp_bell_t" type="checkbox" value="1"> Terminate</label>
-</fieldset>
 
-<fieldset>
-	<legend>Session Identifier</legend>
-	<input id="_ctp_sess_uid" type="text" value="">
-	<input id="_ctp_cmd_init" type="button" value="Reload">
-</fieldset>
+<h4>Session Identifier</h4>
+<div class="row">
+	<div class="col">
+		<div class="input-group">
+			<input class="form-control" id="_ctp_sess_uid" type="text" value="">
+			<div class="input-group-append">
+				<button class="btn btn-outline-secondary" id="_ctp_cmd_init" type="button" value="reload">Reload</button>
+			</div>
+		</div>
+	</div>
+</div>
 
-<div class="cmd"><button id="cmd-done">Done</button></div>
+</div>
 
 <footer>
-<div>
-	<a href="http://edoceo.com/creo/ctp" target="_blank">Browser Phone</a>
-	| <a href="http://vbx.io/" target="_blank">VBX</a>
+<div class="container-fluid">
+<div class="row">
+<div class="col">
+	<a href="http://edoceo.com/creo/ctp" target="_blank">Browser Phone</a> | <a href="http://vbx.io/" target="_blank">VBX</a>
 </div>
-<div><small>
-<a href="https://thenounproject.com/term/telephone/14950" target="_blank">Phone Icon</a>
-by <a href="https://thenounproject.com/foppa" target="_blank">Benny Forsberg</a>
-</small></div>
+<div class="col" style="text-align:right;">
+	<small>
+	<a href="https://thenounproject.com/term/telephone/14950" target="_blank">Phone Icon</a>
+	by <a href="https://thenounproject.com/foppa" target="_blank">Benny Forsberg</a>
+	</small>
+</div>
+</div>
+</div>
 </footer>
 
 </body>

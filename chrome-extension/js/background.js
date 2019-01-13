@@ -19,6 +19,8 @@ var Session = {
 	token: 'none',
 };
 
+var NumberList = [];
+
 //function modeFail()
 //{
 //}
@@ -66,32 +68,20 @@ function callIgnore()
 
 //
 var _app = 'Chrome Twilio Phone';
-var l = function(x) { if (window.console) console.log(x); };
+//var l = function(x) { if (window.console) console.log(x); };
 
 var ctp = {
 
 	w: 2100, // Wait Time after some Event
 	ec:0, // Error Count
 
-	call: function (d)
+	call: function (s, d)
 	{
-		l('ctp.call(' + d + ')');
+		//l('ctp.call(' + d + ')');
 		Connection = Twilio.Device.connect({
-			"To": d
+			From: s,
+			To: d
 		});
-		// l('status:' + Connection.status());
-		// var u = 'https://' + localStorage['_user_sid'] + ':' + localStorage._auth_tid + '@api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid'] + '/Calls.json';
-		// var p = {
-		//	 'ApplicationSid':localStorage['_prog_sid'],
-		//	 'From':'+12065555555', // 'client:' + localStorage['_plug_did'], // From number the Callee Sees
-		//	 'To':'+12065555555'
-		// };
-		// window.console && console.log('ctp.post(' + u + ')');
-		// $.post(u,p);
-		// alert(Connection.status());
-		// Connection.accept();
-		// Connection.disconnect();
-		// l('status:' + Connection.status());
 	},
 
 	// Loading
@@ -100,7 +90,7 @@ var ctp = {
 
 		if ('good' != localStorage.getItem('mic-access')) {
 			ctp.stat('perm', Color.Red, 'Configure A/V Permissions');
-			return;
+			return(false);
 		}
 
 		if (!localStorage.call_dial_last) localStorage.call_dial_last = '';
@@ -111,10 +101,17 @@ var ctp = {
 			localStorage._option_warn = 'Please provide a Twilio Authentication Information';
 			// @todo see if my tab is open already?
 			// chrome.tabs.create({'url': 'options.html'});
-			return;
+			return(false);
+		}
+
+		if ((!localStorage._user_sid) || (!localStorage._auth_tid)) {
+			ctp.stat('auth', Color.Red, 'Configure Authorization');
+			return(false);
 		}
 
 		ctp.stat('init', Color.Grey, 'connecting');
+
+		this.getNumberList();
 
 		// Web Token Request
 		var wtr = {};
@@ -169,7 +166,7 @@ var ctp = {
 	*/
 	stat: function (n, c, t) // Note, Colour, Info Text
 	{
-		l('ctp.stat(' + n + ',' + c + ',' + t + ')');
+		//l('ctp.stat(' + n + ',' + c + ',' + t + ')');
 
 		if (!t) {
 			t = _app;
@@ -199,26 +196,90 @@ var ctp = {
 	},
 
 	/**
-		@param
+		@param s Source Number
+		@param d Target Number
+		@param t Text to Send
+		@param cb Callback Function
 	*/
-	text: function(n,t,cb) {
-		var u = 'https://' + localStorage._user_sid + ':' + localStorage._auth_tid + '@api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/SMS/Messages.json';
-		var p = {
-			'From':'+12062826500', // 'client:' + localStorage._plug_did'], // From number the Callee Sees
-			'To':n,
-			'Body':t
-		};
-		console.log('ctp.post(' + u + ')');
-		$.post(u,p,cb);
+	text: function(s,d,t,cb)
+	{
+		$.ajax({
+			type: 'POST',
+			url: 'https://api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/SMS/Messages.json',
+			data: {
+				From: s,
+				To: d,
+				Body: t
+			},
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader("Authorization", "Basic " + btoa(localStorage._user_sid + ':' + localStorage._auth_tid));
+			},
+			success: function(body, stat) {
+
+			},
+			complete: cb,
+		});
 	},
+
 	/**
 		@param cb callback function
 	*/
-	text_list: function(cb) {
+	text_list: function(cb)
+	{
 		var u = 'https://' + localStorage._user_sid + ':' + localStorage._auth_tid + '@api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/SMS/Messages.json';
 		u += '?Page=0&PageSize=10';
 		window.console && console.log('ctp.text_list(' + u + ')');
 		$.get(u,cb);
+	},
+
+	/**
+	 * Fetches the IncomingNumbers from Twilio to populate the outgoing caller id list
+	 * @return void
+	 */
+	getNumberList()
+	{
+		NumberList = [];
+
+		// Actual Numbers
+		var xhr = $.ajax({
+			type: 'GET',
+			url: 'https://api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/IncomingPhoneNumbers.json',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader("Authorization", "Basic " + btoa(localStorage._user_sid + ':' + localStorage._auth_tid));
+			},
+			success: function(body, stat) {
+				var num_list = body.incoming_phone_numbers;
+				var idx = 0;
+				var max = num_list.length;
+				for (idx = 0; idx<max; idx++) {
+					NumberList.push({
+						nice: num_list[idx].friendly_name,
+						e164: num_list[idx].phone_number
+					});
+				}
+			}
+		});
+
+		// Outgoing Caller IDs
+		var xhr = $.ajax({
+			type: 'GET',
+			url: 'https://api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/OutgoingCallerIds.json',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader ("Authorization", "Basic " + btoa(localStorage._user_sid + ':' + localStorage._auth_tid));
+			},
+			success: function(body, stat) {
+				var num_list = body.outgoing_caller_ids;
+				var idx = 0;
+				var max = num_list.length;
+				for (idx = 0; idx<max; idx++) {
+					NumberList.push({
+						nice: num_list[idx].friendly_name + ' - Outgoing',
+						e164: num_list[idx].phone_number
+					});
+				}
+			}
+		});
+
 	}
 };
 
