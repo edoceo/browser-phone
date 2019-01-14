@@ -1,21 +1,15 @@
-h1. Twilio Chrome Extension
+# Browser Phone
 
-To package this extension for deployment:
+Puts a Plivo or Twilio softphone in your browser
 
-# Update src/manifest.json with a new version
+## Integration
 
-# Minifiy JS http://fmarcia.info/jsmin/test.html
-# Execute ./package.sh
-# Upload ctp.zip to the web-store
+You'll need an account with a service provider and some applications to run.
+
+You will either create your own applications, use built-in tools from the provider or use hosted-applications from a third provider.
+
+ * [https://developers.plivo.com/getting-started/applications/ Plivo Applications]
+ * [https://www.twilio.com/docs/usage/api/applications Twilio Applications]
 
 
-# Package with Chromium - Doesn't Work
 
-This is more for sending to your friends
-
-* chromium --user-data-dir=./cr-twilio
-* Load Extension from ./src
-* Pack Extension
-* Extension Root Directory: /home/atom/svn.cte/src
-* Private key file: /home/atom/svn.cte/ectp.pem
-* Upload Packaged File to Chrome Web-Store

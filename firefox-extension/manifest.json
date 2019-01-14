@@ -1,0 +1,29 @@
+{
+
+  "manifest_version": 2,
+  "name": "VBX Browser Phone",
+  "version": "2019.01.13",
+  "description": "Adds a red border to all webpages matching mozilla.org.",
+  "applications": {
+    "gecko": {
+      "id": "firefox-ext@vbx.io"
+    }
+  },
+  "icons": {
+    "48": "icons/border-48.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "button/geo-19.png",
+      "38": "button/geo-38.png"
+    },
+    "default_title": "Whereami?"
+  }
+  "content_scripts": [
+    {
+      "matches": ["*://*.mozilla.org/*"],
+      "js": ["borderify.js"]
+    }
+  ]
+
+}
