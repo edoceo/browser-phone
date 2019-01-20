@@ -9,10 +9,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	if (bgp.NumberList) {
 		if (bgp.NumberList.length > 0) {
+
 			$('#outgoing-number-list').empty();
+
 			bgp.NumberList.forEach(function(v) {
 				$('#outgoing-number-list').append('<option value="' + v.e164 + '">' + v.nice + '</option>')
 			});
+
+			// Set MRU
+			$('#outgoing-number-list').val(bgp.getData('call_outgoing_last'))
 		}
 	}
 
@@ -119,6 +124,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	$('#_ctp_dial_pad').hide();
 
+	$('#status').html('-' + s + '-');
+
 	switch (s) {
 	case 'ready':
 	case 'ready/closed':
@@ -155,10 +162,10 @@ document.addEventListener("DOMContentLoaded", function () {
 		// $('#_ctp_call_form').hide();
 		break;
 	case 'busy/open': // In Call
+		$('#status').html('On Call');
+		$('#_ctp_call_call').attr('disabled', 'disabled');
+		$('#_ctp_call_kill').removeAttr('disabled');
 		break;
-//	case 410: // Dropped
-//		$('#_ctp_call').show();
-//		break;
 	case 'offline': // Offline
 		$('#_ctp_info').html('Try disabling the extension for a few minutes to clear out dangling connections');
 		break;
