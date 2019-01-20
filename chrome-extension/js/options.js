@@ -4,12 +4,6 @@
 
 var bgp = chrome.extension.getBackgroundPage();
 
-navigator.webkitGetUserMedia({audio: true, video: false}, function() {
-	bgp.setData('mic-access', 'good');
-}, function(e) {
-	bgp.setData('mic-access', 'fail');
-});
-
 var cto = {
 
 	t: null,
@@ -28,6 +22,12 @@ var cto = {
 		bgp.setData('bell_o', $('#_ctp_bell_o').attr('checked'));
 		bgp.setData('bell_t', $('#_ctp_bell_t').attr('checked'));
 
+		bgp.setData('plivo-aid', $('#plivo-aid').val());
+		bgp.setData('plivo-key', $('#plivo-key').val());
+		bgp.setData('plivo-username', $('#plivo-username').val());
+		bgp.setData('plivo-password', $('#plivo-password').val());
+
+
 		$('input[type=text]').removeClass('diff');
 
 	}
@@ -35,6 +35,22 @@ var cto = {
 
 // Init my Thing
 document.addEventListener("DOMContentLoaded", function () {
+
+	$('#btn-media-access').on('click', function() {
+		navigator.webkitGetUserMedia({audio: true, video: false}, function(e) {
+			bgp.setData('mic-access', 'good');
+			bgp.setData('mic-access-note', 'Access Granted!');
+		}, function(e) {
+			//switch (e.code) {
+			//case 0: // Permission
+				bgp.setData('mic-access-note', e.message);
+				$('#media-access-info').html(e.message);
+				break;
+			//}
+		});
+	});
+
+	$('#media-access-info').html(bgp.getData('mic-access-note'));
 
 	$('#_ctp_user_sid').val(bgp.getData('_user_sid'));
 	$('#_ctp_auth_tid').val(bgp.getData('_auth_tid'));
@@ -46,10 +62,16 @@ document.addEventListener("DOMContentLoaded", function () {
 	$('#_ctp_bell_t').attr('checked',bgp.getData('bell_o'));
 	$('#_ctp_bell_o').attr('checked',bgp.getData('bell_t'));
 
-	$('#_ctp_sess_uid').val(bgp.Session.token);
+	$('#_ctp_sess_uid').val(bgp.twiloSession.token);
 	$('#_ctp_cmd_init').on('click', function() {
 		bgp.ctp.init();
 	});
+
+	// Plivo Options
+	$('#plivo-aid').val(bgp.getData('plivo-aid'));
+	$('#plivo-key').val(bgp.getData('plivo-key'));
+	$('#plivo-username').val(bgp.getData('plivo-username'));
+	$('#plivo-password').val(bgp.getData('plivo-password'));
 
 	$('input[type=text], input[type=checkbox]').on('keyup',function(e) {
 

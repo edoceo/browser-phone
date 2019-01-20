@@ -7,6 +7,10 @@ var bgp = chrome.extension.getBackgroundPage();
 // Init my Thing
 document.addEventListener("DOMContentLoaded", function () {
 
+	$('#btn-configure').on('click', function() {
+		chrome.runtime.openOptionsPage();
+	});
+
 	if (bgp.NumberList) {
 		if (bgp.NumberList.length > 0) {
 
@@ -20,11 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			$('#outgoing-number-list').val(bgp.getData('call_outgoing_last'))
 		}
 	}
-
-	// $('#_ctp_incoming_form').hide();
-	// $('#_ctp_call_form').hide();
-	// $('#_ctp_text_form').hide();
-	// $('#_ctp_talk').hide();
 
 	$('#_ctp_call_dial').val( bgp.getData('call_dial_last') );
 
@@ -60,8 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	$('#_ctp_text_list').on('click',function() {
 		$('#_ctp_info').html('Loading...');
-		$('#_ctp_call_form').hide();
-		$('#_ctp_text_form').hide();
+		$('#outgoing-call-form').hide();
+		$('#outgoing-text-form').hide();
 		$('#_ctp_text_send').attr('disabled',true);
 		bgp.ctp.text_list(function(res,ret,jhr) {
 			if (res.sms_messages) {
@@ -74,15 +73,15 @@ document.addEventListener("DOMContentLoaded", function () {
 				h += '</table>';
 			}
 			$('#_ctp_info').hide();
-			$('#_ctp_text_form').html(h);
-			$('#_ctp_text_form').show();
+			$('#outgoing-text-form').html(h);
+			$('#outgoing-text-form').show();
 		});
 	});
 
 	$('#logs-list').on('click',function() {
 		$('#_ctp_info').html('Loading...');
-		$('#_ctp_call_form').hide();
-		$('#_ctp_text_form').hide();
+		$('#outgoing-call-form').hide();
+		$('#outgoing-text-form').hide();
 		bgp.ctp.logs_list(function(res,ret,jhr) {
 			if (res.notifications) {
 				var h = '<table style="width:600px;">';
@@ -104,18 +103,18 @@ document.addEventListener("DOMContentLoaded", function () {
 				h += '</table>';
 			}
 			$('#_ctp_info').hide();
-			$('#_ctp_text_form').html(h);
-			$('#_ctp_text_form').show();
+			$('#outgoing-text-form').html(h);
+			$('#outgoing-text-form').show();
 		});
 
 	});
 
 	// @todo should be Phone.status();
-	var s = 'perm';
+	var s = 'conf';
 	try {
 		s = bgp.Twilio.Device.status();
-		if (bgp.Connection) {
-			s += '/' + bgp.Connection.status();
+		if (bgp.twiloConnection) {
+			s += '/' + bgp.twiloConnection.status();
 		}
 	} catch (e) {
 		// Ignore
@@ -130,19 +129,19 @@ document.addEventListener("DOMContentLoaded", function () {
 	case 'ready':
 	case 'ready/closed':
 		$('#status').html('Ready');
-		$('#_ctp_incoming_form').hide();
-		$('#_ctp_call_form').show();
-		$('#_ctp_text_form').show();
+		$('#incoming-form').hide();
+		$('#outgoing-call-form').show();
+		$('#outgoing-text-form').show();
 		break;
 	case 'ready/pending':
 		$('#status').html('Ring! Ring!');
-		$('#_ctp_incoming_form').show();
+		$('#incoming-form').show();
 
 		var url = bgp.getData('_open_url');
 		if ((undefined !== url) && (url.length > 5)) {
-			url = url.replace('{PHONE}', bgp.Connection.parameters.From);
+			url = url.replace('{PHONE}', bgp.twiloConnection.parameters.From);
 			$('#_take_link').attr('href', url);
-			$('#_take_link').text(bgp.Connection.parameters.From);
+			$('#_take_link').text(bgp.twiloConnection.parameters.From);
 		}
 
 		$('#call-answer').on('click',function() {
@@ -158,8 +157,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		break;
 	case 'busy': // In Call
-		$('#info').html('Talk: ' + bgp.ctp.Connection.parameters.To);
-		// $('#_ctp_call_form').hide();
+		$('#info').html('Talk: ' + bgp.ctp.twiloConnection.parameters.To);
+		// $('#outgoing-call-form').hide();
 		break;
 	case 'busy/open': // In Call
 		$('#status').html('On Call');
@@ -170,7 +169,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		$('#_ctp_info').html('Try disabling the extension for a few minutes to clear out dangling connections');
 		break;
 	default:
-		$('#_ctp_info').html('Configure Options' + s);
+		$('#_ctp_info').html('Configure Options');
+		$('#configure').show();
+		$('#incoming-form').hide();
+		$('#outgoing-call-form').hide();
+		$('#outgoing-text-form').hide();
 		break;
 	}
 	// case 'busy':

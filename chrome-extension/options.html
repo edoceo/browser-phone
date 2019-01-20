@@ -8,96 +8,188 @@
 <title>Browser Phone - Options</title>
 </head>
 <body class="options">
-<header>
-	<div id="info"></div>
-	<div id="warn"></div>
-</header>
 
-<!--
-<p>Input the information here, data is automatically saved, just close this tab when done.</p>
--->
+<div class="container mt-4">
+	<p class="alert alert-info">Input the information here, data is automatically saved, just close this tab when done.</p>
+</div>
 
 <div class="container">
-
-<h2>Twilio Account Information</h2>
 <div class="row">
-	<div class="col">
-		<label>Account SID</label>
-		<input class="form-control" id="_ctp_user_sid" name="_ctp_user_sid" type="text" value="">
-	</div>
-	<div class="col">
-		<label>Auth Token</label>
-		<input class="form-control" id="_ctp_auth_tid" name="_ctp_auth_tid" type="text" value="">
-	</div>
+<div class="col-md-6">
+	<h2>Media Access</h2>
+	<p>Browser Phone needs access to your microphone to be able to make and receive calls</p>
 </div>
-<p>These two options can be found on your <a href="https://www.twilio.com/user/account" target="_blank">Twilio Dashboard</a>.</p>
-
-
-<h2>Application Details</h2>
-<div class="row">
-	<div class="col">
-		<div class="form-group">
-			<label>Device ID</label>
-			<input class="form-control" id="_ctp_plug_did" name="_ctp_plug_did" type="text" value="">
-			<p>This will become the common name of this device running this plug-in.</p>
-		</div>
-	</div>
-	<div class="col">
-		<div class="form-group">
-			<label>Application SID</label>
-			<input class="form-control" id="_ctp_prog_sid" name="_ctp_prog_sid" type="text" value="">
-			<p>Collect the SID from <strong>your</strong> <a href="https://www.twilio.com/console/voice/runtime/twiml-apps" target="_blank">Twilio Application</a> and input it here.</p>
-		</div>
-	</div>
+<div class="col-md-3">
+	<button class="btn btn-outline-primary" id="btn-media-access">Check Microphone Access</button>
+</div>
+<div class="col-md-3">
+	<button class="btn btn-outline-secondary" disabled id="media-access-info">Status ????</button>
+</div>
+</div>
 </div>
 
+<div class="container mt-2">
+<div class="card">
+<div class="card-header"><h2>Twilio Account Information</h2></div>
+<div class="card-body">
+	<div class="row">
+		<div class="col">
+			<label>Account SID</label>
+			<input class="form-control" id="_ctp_user_sid" name="_ctp_user_sid" type="text" value="">
+		</div>
+		<div class="col">
+			<label>Auth Token</label>
+			<input class="form-control" id="_ctp_auth_tid" name="_ctp_auth_tid" type="text" value="">
+		</div>
+	</div>
+	<p>These two options can be found on your <a href="https://www.twilio.com/user/account" target="_blank">Twilio Dashboard</a>.</p>
 
-<h3>Options</h3>
-<div class="row">
-	<div class="col">
-		<label>Open on Answer</label>
-		<div class="input-group">
-			<input class="form-control" id="_ctp_open_url" name="_ctp_open_url" placeholder="https://something/cool?q={PHONE}" type="text" value="">
-			<div class="input-group-append">
-				<button class="btn btn-outline-secondary" type="button">Test</button>
+	<h3>Application Details</h3>
+	<div class="row">
+		<div class="col">
+			<div class="form-group">
+				<label>Device ID</label>
+				<input class="form-control" id="_ctp_plug_did" name="_ctp_plug_did" type="text" value="">
+				<p>This will become the common name of this device running this plug-in.</p>
 			</div>
 		</div>
-		<p>Open this page when the call is answered, replacing {PHONE} with the inbound caller.</p>
-	</div>
-	<div class="col">
-		<label>Sounds</label>
-		<div>
-		<div class="btn-group">
-			<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_i" type="checkbox" value="1"> Incoming</label>
-			<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_o" type="checkbox" value="1"> Outgoing</label>
-			<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_t" type="checkbox" value="1"> Terminate</label>
-		</div>
-		</div>
-	</div>
-</div>
-
-
-<h4>Session Identifier</h4>
-<div class="row">
-	<div class="col">
-		<div class="input-group">
-			<textarea class="form-control" id="_ctp_sess_uid"></textarea>
-			<div class="input-group-append">
-				<button class="btn btn-outline-secondary" id="_ctp_cmd_init" type="button" value="reload">Reload</button>
+		<div class="col">
+			<div class="form-group">
+				<label>Application SID</label>
+				<input class="form-control" id="_ctp_prog_sid" name="_ctp_prog_sid" type="text" value="">
+				<p>Collect the SID from <strong>your</strong> <a href="https://www.twilio.com/console/voice/runtime/twiml-apps" target="_blank">Twilio Application</a> and input it here.</p>
 			</div>
 		</div>
 	</div>
-</div>
+
+	<h3>Options</h3>
+	<div class="row">
+		<div class="col">
+			<label>Open on Answer</label>
+			<div class="input-group">
+				<input class="form-control" id="_ctp_open_url" name="_ctp_open_url" placeholder="https://something/cool?q={PHONE}" type="text" value="">
+				<div class="input-group-append">
+					<button class="btn btn-outline-secondary" type="button">Test</button>
+				</div>
+			</div>
+			<p>Open this page when the call is answered, replacing {PHONE} with the inbound caller.</p>
+		</div>
+		<div class="col">
+			<label>Sounds</label>
+			<div>
+			<div class="btn-group">
+				<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_i" type="checkbox" value="1"> Incoming</label>
+				<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_o" type="checkbox" value="1"> Outgoing</label>
+				<label class="btn btn-outline-secondary"><input checked id="_ctp_bell_t" type="checkbox" value="1"> Terminate</label>
+			</div>
+			</div>
+		</div>
+	</div>
+
+	<h4>Session Identifier</h4>
+	<div class="row">
+		<div class="col">
+			<div class="input-group">
+				<textarea class="form-control" id="_ctp_sess_uid"></textarea>
+				<div class="input-group-append">
+					<button class="btn btn-outline-secondary" id="_ctp_cmd_init" type="button" value="reload">Reload</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </div>
+</div>
+</div>
+
+<div class="container mt-2">
+<div class="card">
+<div class="card-header"><h2>Plivo Account Information</h2></div>
+<div class="card-body">
+	<div class="row">
+		<div class="col">
+			<label>Auth ID</label>
+			<input class="form-control" id="plivo-aid" type="text" value="">
+		</div>
+		<div class="col">
+			<label>Auth Token</label>
+			<input class="form-control" id="plivo-key" type="text" value="">
+		</div>
+	</div>
+	<p>These two options can be found on your <a href="https://console.plivo.com/dashboard/" target="_blank">Plivo Dashboard</a>.</p>
+
+	<h3>Endpoint Details</h3>
+	<div class="row">
+		<div class="col">
+			<div class="form-group">
+				<label>Username</label>
+				<input class="form-control" id="plivo-username" type="text" value="">
+				<p>This is available from your list of <a href="https://console.plivo.com/voice/endpoints/" target="_blank">Plivo Endpoints</a>.</p>
+			</div>
+		</div>
+		<div class="col">
+			<div class="form-group">
+				<label>Password</label>
+				<input class="form-control" id="plivo-password" type="text" value="">
+			</div>
+		</div>
+		<div class="col">
+			<div class="form-group">
+				<label>Application ID</label>
+				<input class="form-control" type="text" value="">
+				<p>Collect this ID from <strong>your</strong> <a href="https://console.plivo.com/voice/applications/" target="_blank">Plivo Applications</a> and input it here.</p>
+			</div>
+		</div>
+	</div>
+
+	<h3>Options</h3>
+	<div class="row">
+		<div class="col">
+			<label>Open on Answer</label>
+			<div class="input-group">
+				<input class="form-control" placeholder="https://something/cool?q={PHONE}" type="text" value="">
+				<div class="input-group-append">
+					<button class="btn btn-outline-secondary" type="button">Test</button>
+				</div>
+			</div>
+			<p>Open this page when the call is answered, replacing {PHONE} with the inbound caller.</p>
+		</div>
+		<div class="col">
+			<label>Sounds</label>
+			<div>
+			<div class="btn-group">
+				<label class="btn btn-outline-secondary"><input checked type="checkbox" value="1"> Incoming</label>
+				<label class="btn btn-outline-secondary"><input checked type="checkbox" value="1"> Outgoing</label>
+				<label class="btn btn-outline-secondary"><input checked type="checkbox" value="1"> Terminate</label>
+			</div>
+			</div>
+		</div>
+	</div>
+
+	<h4>Session Identifier</h4>
+	<div class="row">
+		<div class="col">
+			<div class="input-group">
+				<textarea class="form-control" id="plivo-session-id"></textarea>
+				<div class="input-group-append">
+					<button class="btn btn-outline-secondary" id="plivo-session-reload" type="button" value="reload">Reload</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+</div>
+</div>
+
 
 <footer>
 <div class="container-fluid">
 <div class="row">
-<div class="col">
-	<a href="http://edoceo.com/creo/ctp" target="_blank">Browser Phone</a> | <a href="http://vbx.io/" target="_blank">VBX</a>
+<div class="col p-2">
+	<a href="http://vbx.io/browser-phone" target="_blank">Browser Phone</a> | <a href="http://vbx.io/" target="_blank">VBX</a>
 </div>
-<div class="col" style="text-align:right;">
+<div class="col p-2" style="text-align:right;">
 	<small>
 	<a href="https://thenounproject.com/term/telephone/14950" target="_blank">Phone Icon</a>
 	by <a href="https://thenounproject.com/foppa" target="_blank">Benny Forsberg</a>

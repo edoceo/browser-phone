@@ -13,14 +13,6 @@ var Color = {
 	Grey: [56, 56, 56, 56],
 };
 
-var Connection = null;
-
-var Session = {
-	token: 'none',
-};
-
-var NumberList = [];
-
 //function modeFail()
 //{
 //}
@@ -40,10 +32,10 @@ function setData(k, v)
 */
 function callAnswer()
 {
-	Connection.want++;
-	Connection.accept(); // no return value
+	twiloConnection.want++;
+	twiloConnection.accept(); // no return value
 
-	if (Connection.want >= 2) {
+	if (twiloConnection.want >= 2) {
 		ctp.stat('fail', Color.Red, 'Cannot Accept; likely due to Media Permissions');
 		return false;
 	}
@@ -54,8 +46,8 @@ function callAnswer()
 
 function callIgnore()
 {
-	Connection.want = -1;
-	Connection.ignore();
+	twiloConnection.want = -1;
+	twiloConnection.ignore();
 
 	ctp.stat('drop', Color.Grey, 'Ignored');
 	setTimeout(function() {
@@ -78,7 +70,7 @@ var ctp = {
 	call: function (s, d)
 	{
 		//l('ctp.call(' + d + ')');
-		Connection = Twilio.Device.connect({
+		twiloConnection = Twilio.Device.connect({
 			From: s,
 			To: d
 		});
@@ -120,9 +112,9 @@ var ctp = {
 		wtr.exp = Math.round(new Date().getTime() / 1000) + 3600; // Now + 1 Hour
 
 		var tok = new jwt.WebToken(JSON.stringify(wtr), JSON.stringify({typ: 'JWT', alg: 'HS256'}));
-		Session.token = tok.serialize(localStorage._auth_tid);
+		twiloSession.token = tok.serialize(localStorage._auth_tid);
 
-		var td = Twilio.Device.setup(Session.token, {
+		var td = Twilio.Device.setup(twiloSession.token, {
 			debug: true
 		});
 
@@ -145,9 +137,9 @@ var ctp = {
 	*/
 	kill: function ()
 	{
-		if (Connection) {
-			Connection.disconnect();
-			Connection = null;
+		if (twiloConnection) {
+			twiloConnection.disconnect();
+			twiloConnection = null;
 		}
 		Twilio.Device.disconnectAll();
 	},
@@ -286,22 +278,22 @@ var ctp = {
 /**
 	Prompt for Options or the Popup if set properly
 */
-chrome.browserAction.onClicked.addListener(function(tab) {
-
-	//if ('good' != localStorage.getItem('mic-access')) {
-	var arg = {
-		url: 'options.html'
-	};
-
-	chrome.tabs.create(arg);
-
-	//} else {
-	//	chrome.browserAction.setPopup({
-	//		popup: "popup.html"
-	//	});
-	//}
-
-});
+// chrome.browserAction.onClicked.addListener(function(tab) {
+//
+// 	//if ('good' != localStorage.getItem('mic-access')) {
+// 	var arg = {
+// 		url: 'options.html'
+// 	};
+//
+// 	chrome.tabs.create(arg);
+//
+// 	//} else {
+// 	//	chrome.browserAction.setPopup({
+// 	//		popup: "popup.html"
+// 	//	});
+// 	//}
+//
+// });
 
 
 // Init my Thing
@@ -321,9 +313,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	Twilio.Device.incoming(function (x) {
 
 		console.log('Twilio.Device.incoming()');
-		Connection = x;
-		Connection.want = 0;
-		ctp.stat('ring', Color.Red, 'From: ' + Connection.parameters.From);
+		twiloConnection = x;
+		twiloConnection.want = 0;
+		ctp.stat('ring', Color.Red, 'From: ' + twiloConnection.parameters.From);
 
 	});
 
@@ -359,7 +351,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	});
 
-	// Cancel - incoming connection is canceled by the caller before it is accepted
+	// Cancel - incoming twiloConnection is canceled by the caller before it is accepted
 	Twilio.Device.cancel(function(x) {
 
 		console.log('Twilio.Device.cancel()');
@@ -385,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		console.log('Twilio.Device.error(' + e.message + ')');
 
-		Connection = null;
+		twiloConnection = null;
 
 		ctp.kill();
 		ctp.stat('fail', Color.Red,e.message);

@@ -13,7 +13,7 @@
 		"48":"img/icon48.png",
 		"128":"img/icon128.png"
 	},
-	"content_security_policy": "media-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com; object-src 'self'; script-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com;",
+	"content_security_policy": "media-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com; object-src 'self'; script-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com https://cdn.plivo.com;",
 	"background": {
 		"page": "background.html"
 	},
