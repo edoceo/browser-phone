@@ -1,11 +1,11 @@
 {
-	"name": "Browser Phone",
-	"short_name": "Telephone",
-	"description": "Enables the Twilio Clients in your always on Chrome browser",
-	"version": "2016.24.1400",
+	"name": "VBX Browser Phone",
+	"short_name": "VBX Phone",
+	"description": "Enables a Twilio or Plivo Client",
+	"version": "2019.01.13",
 	"manifest_version": 2,
 	"minimum_chrome_version": "40.0.0",
-	"homepage_url": "http://edoceo.com/creo/ctp",
+	"homepage_url": "http://vbx.io/browser-phone",
 	"offline_enabled": false,
 	"incognito": "not_allowed",
 	"icons": {
