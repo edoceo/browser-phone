@@ -13,12 +13,18 @@
 		"48":"img/icon48.png",
 		"128":"img/icon128.png"
 	},
-	"content_security_policy": "media-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com; object-src 'self'; script-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com https://cdn.plivo.com;",
+	"content_security_policy": "media-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com; object-src 'self'; script-src 'self' 'unsafe-eval' https://media.twiliocdn.com https://eventgw.twilio.com https://cdn.plivo.com;",
 	"background": {
 		"page": "background.html"
 	},
 	"browser_action": {
-		"default_icon": "img/icon19.png",
+		"default_icon": {
+			"16": "img/icon16.png",
+			"24": "img/icon24.png",
+			"32": "img/icon32.png",
+			"48": "img/icon48.png",
+			"128": "img/icon128.png"
+		},
 		"default_popup": "popup.html",
 		"default_title": "Browser Phone"
 	},

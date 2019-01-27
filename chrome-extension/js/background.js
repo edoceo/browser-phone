@@ -81,7 +81,7 @@ var ctp = {
 	{
 
 		if ('good' != localStorage.getItem('mic-access')) {
-			ctp.stat('perm', Color.Red, 'Configure A/V Permissions');
+			ctp.stat('conf', Color.Red, 'Configure A/V Permissions');
 			return(false);
 		}
 
@@ -161,7 +161,7 @@ var ctp = {
 		//l('ctp.stat(' + n + ',' + c + ',' + t + ')');
 
 		if (!t) {
-			t = _app;
+			t = '';
 		}
 
 		chrome.browserAction.setTitle({
@@ -173,6 +173,7 @@ var ctp = {
 		chrome.browserAction.setBadgeBackgroundColor({
 			color: c
 		});
+
 		//chrome.browserAction.setIcon({
 		//	path: "img/phone-idle.png",
 		//});
@@ -306,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Ready Handler
 	Twilio.Device.ready(function(d) {
 		console.log('Twilio.Device.ready(' + d + ')');
-		ctp.stat('idle', Color.Green, 'Ready');
+		ctp.stat('idle', Color.Green, 'Online');
 	});
 
 	// Incoming
@@ -343,7 +344,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		console.log('Twilio.Device.disconnect()');
 
 		ctp.stat('done', Color.Grey);
-		// ctp.kill();
 
 		window.setTimeout(function() {
 			ctp.init();

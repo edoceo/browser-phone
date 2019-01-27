@@ -121,21 +121,26 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 	console.log('Popup Status: ' + s);
 
-	$('#_ctp_dial_pad').hide();
-
 	$('#status').html('-' + s + '-');
 
 	switch (s) {
 	case 'ready':
 	case 'ready/closed':
+
 		$('#status').html('Ready');
 		$('#incoming-form').hide();
 		$('#outgoing-call-form').show();
 		$('#outgoing-text-form').show();
+		$('#_ctp_dial_pad').hide();
+
 		break;
+
 	case 'ready/pending':
+
 		$('#status').html('Ring! Ring!');
 		$('#incoming-form').show();
+		$('#outgoing-call-form').hide();
+		$('#outgoing-text-form').hide();
 
 		var url = bgp.getData('_open_url');
 		if ((undefined !== url) && (url.length > 5)) {
@@ -152,16 +157,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		$('#call-ignore').on('click',function() {
 			bgp.callIgnore();
-			// window.close();
+			window.close();
 		});
 
 		break;
+
 	case 'busy': // In Call
+
 		$('#info').html('Talk: ' + bgp.ctp.twiloConnection.parameters.To);
-		// $('#outgoing-call-form').hide();
-		break;
+		$('#outgoing-call-form').hide();
+		$('#outgoing-text-form').hide();
+		$('#_ctp_dial_pad').show();
+
 	case 'busy/open': // In Call
 		$('#status').html('On Call');
+		$('#outgoing-call-form').hide();
+		$('#outgoing-text-form').hide();
+		$('#_ctp_dial_pad').show();
 		$('#_ctp_call_call').attr('disabled', 'disabled');
 		$('#_ctp_call_kill').removeAttr('disabled');
 		break;
@@ -169,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		$('#_ctp_info').html('Try disabling the extension for a few minutes to clear out dangling connections');
 		break;
 	default:
-		$('#_ctp_info').html('Configure Options');
 		$('#configure').show();
 		$('#incoming-form').hide();
 		$('#outgoing-call-form').hide();
