@@ -4,6 +4,21 @@
 
 var bgp = chrome.extension.getBackgroundPage();
 
+
+chrome.runtime.onMessage.addListener(function(msg) {
+
+	$('#outgoing-target').val( msg.target );
+
+});
+
+
+chrome.runtime.onMessageExternal.addListener(function(msg) {
+
+	$('#outgoing-target').val( msg.target );
+
+});
+
+
 // Init my Thing
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -21,40 +36,48 @@ document.addEventListener("DOMContentLoaded", function () {
 			});
 
 			// Set MRU
-			$('#outgoing-number-list').val(bgp.getData('call_outgoing_last'))
+			$('#outgoing-number-list').val(bgp.getData('outgoing-source'))
 		}
 	}
 
-	$('#_ctp_call_dial').val( bgp.getData('call_dial_last') );
+	$('#outgoing-target').val( bgp.getData('call_dial_last') );
 
 	$('#_ctp_call_call').on('click',function() {
-		var s = $('#outgoing-number-list').val();
-		var d = $('#_ctp_call_dial').val();
-		bgp.setData('call_outgoing_last', s);
-		bgp.setData('call_dial_last', d);
-		bgp.ctp.call(s, d);
-		//window.close();
+
+		var source = $('#outgoing-number-list').val();
+		var target = $('#outgoing-target').val();
+		bgp.ctp.call(source, target);
+
+		bgp.setData('outgoing-source', source);
+		bgp.setData('call_dial_last', target);
+
+		$('#outgoing-call-stop').removeAttr('disabled');
 	});
-	$('#_ctp_call_kill').on('click',function() {
+
+	$('#outgoing-call-stop').on('click',function() {
+		$('#outgoing-call-stop').attr('disabled', 'disabled');
 		bgp.ctp.kill();
 		window.close();
 	});
 
 	$('#_ctp_text_send').on('click',function() {
 
-		var s = $('#outgoing-number-list').val();
-		var d = $('#_ctp_call_dial').val();
-		var t = $('#_ctp_text_body').val();
+		var source = $('#outgoing-number-list').val();
+		var target = $('#outgoing-target').val();
+		var txt = $('#_ctp_text_body').val();
 
 		$('#_ctp_text_send').attr('disabled',true);
 		$('#_ctp_info').html('Sending...');
 
-		bgp.ctp.text(s, d, t, function() {
+		bgp.ctp.text(source, target, txt, function() {
 			$('#_ctp_info').html('Text Sent');
 			$('#_ctp_text_text').val('');
 			$('#_ctp_text_send').removeAttr('disabled');
 			window.close();
 		});
+
+		bgp.setData('outgoing-source', source);
+
 	});
 
 	$('#_ctp_text_list').on('click',function() {
@@ -113,8 +136,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	var s = 'conf';
 	try {
 		s = bgp.Twilio.Device.status();
-		if (bgp.twiloConnection) {
-			s += '/' + bgp.twiloConnection.status();
+		if (bgp.twilioChannel) {
+			s += '/' + bgp.twilioChannel.status();
 		}
 	} catch (e) {
 		// Ignore
@@ -131,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		$('#incoming-form').hide();
 		$('#outgoing-call-form').show();
 		$('#outgoing-text-form').show();
-		$('#_ctp_dial_pad').hide();
+		$('#outgoing-number-grid').hide();
 
 		break;
 
@@ -144,9 +167,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		var url = bgp.getData('_open_url');
 		if ((undefined !== url) && (url.length > 5)) {
-			url = url.replace('{PHONE}', bgp.twiloConnection.parameters.From);
+			url = url.replace('{PHONE}', bgp.twilioChannel.parameters.From);
 			$('#_take_link').attr('href', url);
-			$('#_take_link').text(bgp.twiloConnection.parameters.From);
+			$('#_take_link').text(bgp.twilioChannel.parameters.From);
 		}
 
 		$('#call-answer').on('click',function() {
@@ -164,18 +187,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	case 'busy': // In Call
 
-		$('#info').html('Talk: ' + bgp.ctp.twiloConnection.parameters.To);
+		$('#info').html('Talk: ' + bgp.ctp.twilioChannel.parameters.To);
 		$('#outgoing-call-form').hide();
 		$('#outgoing-text-form').hide();
-		$('#_ctp_dial_pad').show();
+		$('#outgoing-number-grid').show();
 
 	case 'busy/open': // In Call
 		$('#status').html('On Call');
 		$('#outgoing-call-form').hide();
 		$('#outgoing-text-form').hide();
-		$('#_ctp_dial_pad').show();
+		$('#outgoing-number-grid').show();
 		$('#_ctp_call_call').attr('disabled', 'disabled');
-		$('#_ctp_call_kill').removeAttr('disabled');
+		$('#outgoing-call-stop').removeAttr('disabled');
 		break;
 	case 'offline': // Offline
 		$('#_ctp_info').html('Try disabling the extension for a few minutes to clear out dangling connections');
@@ -185,6 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		$('#incoming-form').hide();
 		$('#outgoing-call-form').hide();
 		$('#outgoing-text-form').hide();
+		$('#outgoing-number-grid').hide();
 		break;
 	}
 	// case 'busy':

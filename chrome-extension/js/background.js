@@ -4,6 +4,7 @@
 
 'use strict';
 
+
 // These are all exposed to the Options and Popup pages from the BGP object
 
 var Color = {
@@ -32,10 +33,10 @@ function setData(k, v)
 */
 function callAnswer()
 {
-	twiloConnection.want++;
-	twiloConnection.accept(); // no return value
+	twilioChannel.want++;
+	twilioChannel.accept(); // no return value
 
-	if (twiloConnection.want >= 2) {
+	if (twilioChannel.want >= 2) {
 		ctp.stat('fail', Color.Red, 'Cannot Accept; likely due to Media Permissions');
 		return false;
 	}
@@ -46,8 +47,8 @@ function callAnswer()
 
 function callIgnore()
 {
-	twiloConnection.want = -1;
-	twiloConnection.ignore();
+	twilioChannel.want = -1;
+	twilioChannel.ignore();
 
 	ctp.stat('drop', Color.Grey, 'Ignored');
 	setTimeout(function() {
@@ -69,8 +70,7 @@ var ctp = {
 
 	call: function (s, d)
 	{
-		//l('ctp.call(' + d + ')');
-		twiloConnection = Twilio.Device.connect({
+		twilioChannel = Twilio.Device.connect({
 			From: s,
 			To: d
 		});
@@ -112,9 +112,9 @@ var ctp = {
 		wtr.exp = Math.round(new Date().getTime() / 1000) + 3600; // Now + 1 Hour
 
 		var tok = new jwt.WebToken(JSON.stringify(wtr), JSON.stringify({typ: 'JWT', alg: 'HS256'}));
-		twiloSession.token = tok.serialize(localStorage._auth_tid);
+		twilioSession.token = tok.serialize(localStorage._auth_tid);
 
-		var td = Twilio.Device.setup(twiloSession.token, {
+		var td = Twilio.Device.setup(twilioSession.token, {
 			debug: true
 		});
 
@@ -137,9 +137,9 @@ var ctp = {
 	*/
 	kill: function ()
 	{
-		if (twiloConnection) {
-			twiloConnection.disconnect();
-			twiloConnection = null;
+		if (twilioChannel) {
+			twilioChannel.disconnect();
+			twilioChannel = null;
 		}
 		Twilio.Device.disconnectAll();
 	},
@@ -305,23 +305,23 @@ document.addEventListener("DOMContentLoaded", function () {
 	ctp.init();
 
 	// Ready Handler
-	Twilio.Device.ready(function(d) {
+	Twilio.Device.on('ready', function(d) {
 		console.log('Twilio.Device.ready(' + d + ')');
 		ctp.stat('idle', Color.Green, 'Online');
 	});
 
 	// Incoming
-	Twilio.Device.incoming(function (x) {
+	Twilio.Device.on('incoming', function (x) {
 
 		console.log('Twilio.Device.incoming()');
-		twiloConnection = x;
-		twiloConnection.want = 0;
-		ctp.stat('ring', Color.Red, 'From: ' + twiloConnection.parameters.From);
+		twilioChannel = x;
+		twilioChannel.want = 0;
+		ctp.stat('ring', Color.Red, 'From: ' + twilioChannel.parameters.From);
 
 	});
 
 	// Connected
-	Twilio.Device.connect(function (c) {
+	Twilio.Device.on('connect', function (c) {
 
 		console.log('Twilio.Device.connect()');
 
@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	// Disconnected
-	Twilio.Device.disconnect(function (x) {
+	Twilio.Device.on('disconnect', function (x) {
 
 		console.log('Twilio.Device.disconnect()');
 
@@ -351,8 +351,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	});
 
-	// Cancel - incoming twiloConnection is canceled by the caller before it is accepted
-	Twilio.Device.cancel(function(x) {
+	// Cancel - incoming twilioChannel is canceled by the caller before it is accepted
+	Twilio.Device.on('cancel', function(x) {
 
 		console.log('Twilio.Device.cancel()');
 		ctp.kill();
@@ -373,30 +373,57 @@ document.addEventListener("DOMContentLoaded", function () {
 	/**
 		Token has expired => Make a new one
 	*/
-	Twilio.Device.error(function (e) {
+	Twilio.Device.on('error', function (e) {
 
 		console.log('Twilio.Device.error(' + e.message + ')');
-
-		twiloConnection = null;
 
 		ctp.kill();
 		ctp.stat('fail', Color.Red,e.message);
 
+		twilioChannel = null;
+		twilioSession = null;
+
 		window.setTimeout(function() {
 			ctp.init();
 		}, 2000);
+
 	});
 });
 
+var cmp = {
+	type: 'normal',
+	title: 'Browser Phone',
+	enabled: true,
+	visible: true,
+	contexts: [ 'link', 'selection' ],
+	// targetUrlPatterns: [ '^tel:', '^callto:' ], // these schemes are not allowed anyway :(
+	onclick: function(ocd, tab) {
+		if (ocd.linkUrl) {
+			debugger;
+			if ('tel://' === ocd.linkUrl.substr(0, 6)) {
+				var num = ocd.linkUrl.substr(6);
+				setData('call_dial_last', num);
+				ctp.stat('call', Color.Blue);
+				//chrome.runtime.sendMessage(null, { 'target': num }, function() { /* What? */ });
+			}
+		}
+
+		if (ocd.selectionText) {
+			// Copy Text to Popup
+			//chrome.runtime.sendMessage(null, { 'target': num }, function() { /* What? */ });
+			setData('call_dial_last', num);
+			ctp.stat('call', Color.Blue);
+		}
+
+	}
+};
+
+console.log('cmp');
+
 // Add Context Menu Items
-// chrome.contextMenus.create({
-//	 type:'normal',
-//	 title:'Twilio It!',
-//	 contexts:[ 'link', 'selection' ],
-//	 onclick:function(ocd,tab) { alert('This functionality is not fully implemented yet'); }
-// }, function() {
-//	 if (chrome.extension.lastError) {
-//		 ctp.stat('fail',[255, 0, 0, 192]);
-//		 chrome.browserAction.setTitle({title: chrome.extension.lastError});
-//	 }
-// });
+chrome.contextMenus.create(cmp, function() {
+	if (chrome.extension.lastError) {
+		ctp.stat('fail', Color.Red);
+		//chrome.browserAction.setTitle({title: chrome.extension.lastError});
+	}
+});

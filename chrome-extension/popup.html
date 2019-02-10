@@ -41,10 +41,10 @@
 <div class="form-group">
 	<label>Outgoing Dial:</label>
 	<div class="input-group">
-		<input class="form-control" id="_ctp_call_dial" name="_ctp_dial" type="text" value="">
+		<input class="form-control" id="outgoing-target" type="text" value="">
 		<div class="input-group-append">
-			<button class="btn btn-outline-secondary" id="_ctp_call_call" type="button" value="call">Call</button>
-			<button class="btn btn-outline-danger" disabled id="_ctp_call_kill" type="button" value="Hang Up">Hang Up</button>
+			<button class="btn btn-outline-secondary" id="_ctp_call_call" type="button">Call</button>
+			<button class="btn btn-outline-danger" disabled id="outgoing-call-stop" type="button">Hang Up</button>
 		</div>
 	</div>
 </div>
@@ -52,7 +52,7 @@
 
 
 <!-- Button Pad -->
-<div class="container" id="_ctp_dial_pad">
+<div class="container mt-2" id="outgoing-number-grid">
 	<div class="row">
 		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="1" id="button1"></div>
 		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="2" id="button2"></div>

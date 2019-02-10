@@ -50,7 +50,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	});
 
-	$('#media-access-info').html(bgp.getData('mic-access-note'));
+	var x = bgp.getData('mic-access-note');
+	if (x) {
+		$('#media-access-info').html(x);
+	}
+
 
 	$('#_ctp_user_sid').val(bgp.getData('_user_sid'));
 	$('#_ctp_auth_tid').val(bgp.getData('_auth_tid'));
@@ -62,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	$('#_ctp_bell_t').attr('checked',bgp.getData('bell_o'));
 	$('#_ctp_bell_o').attr('checked',bgp.getData('bell_t'));
 
-	$('#_ctp_sess_uid').val(bgp.twiloSession.token);
+	$('#_ctp_sess_uid').val(bgp.twilioSession.token);
 	$('#_ctp_cmd_init').on('click', function() {
 		bgp.ctp.init();
 	});

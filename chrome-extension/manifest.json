@@ -1,6 +1,6 @@
 {
 	"name": "VBX Browser Phone",
-	"short_name": "VBX Phone",
+	"short_name": "Browser Phone",
 	"description": "Enables a Twilio or Plivo Client",
 	"version": "2019.01.13",
 	"manifest_version": 2,
@@ -29,5 +29,7 @@
 		"default_title": "Browser Phone"
 	},
 	"options_page": "options.html",
-	"permissions": []
+	"permissions": [
+		"contextMenus"
+	]
 }

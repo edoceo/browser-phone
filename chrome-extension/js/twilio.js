@@ -2,9 +2,8 @@
  * Twilio Routines for Browser Phone
  */
 
-var twiloConnection = null;
-
-var twiloSession = {
+var twilioChannel = null;
+var twilioSession = {
 	token: 'none',
 };
 
