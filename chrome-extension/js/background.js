@@ -60,7 +60,7 @@ function callIgnore()
 }
 
 //
-var _app = 'Chrome Twilio Phone';
+var _app = 'VBX Browser Phone';
 //var l = function(x) { if (window.console) console.log(x); };
 
 var ctp = {
@@ -79,23 +79,15 @@ var ctp = {
 	// Loading
 	init: function ()
 	{
-
-		if ('good' != localStorage.getItem('mic-access')) {
-			ctp.stat('conf', Color.Red, 'Configure A/V Permissions');
-			return(false);
-		}
-
 		if (!localStorage.call_dial_last) localStorage.call_dial_last = '';
 		if (!localStorage.call_text_last) localStorage.call_text_last = '';
 
-		if (!localStorage._plug_did) {
-			ctp.stat('name', Color.Red, 'Configure Client Name');
-			localStorage._option_warn = 'Please provide a Twilio Authentication Information';
-			// @todo see if my tab is open already?
-			// chrome.tabs.create({'url': 'options.html'});
+		if ('good' != localStorage.getItem('mic-access')) {
+			ctp.stat('conf', Color.Red, 'Configure Audio Permissions');
 			return(false);
 		}
 
+		// Check Access
 		if ((!localStorage._user_sid) || (!localStorage._auth_tid)) {
 			ctp.stat('auth', Color.Red, 'Configure Authorization');
 			return(false);
@@ -103,7 +95,23 @@ var ctp = {
 
 		ctp.stat('init', Color.Grey, 'connecting');
 
+		this.getApplicationList();
 		this.getNumberList();
+
+		// Check Client Name
+		if (!localStorage._plug_did) {
+			ctp.stat('name', Color.Red, 'Configure Client Name');
+			localStorage._option_warn = 'Configure a Twilio Client Name';
+			return(false);
+		}
+
+		// Check Outgoing Application
+		if (!localStorage._prog_sid) {
+			ctp.stat('prog', Color.Red, 'Configure TwiML Application');
+			localStorage._option_warn = 'Configure an Outgoing TwiML Application';
+			return(false);
+		}
+
 
 		// Web Token Request
 		var wtr = {};
@@ -219,10 +227,56 @@ var ctp = {
 	*/
 	text_list: function(cb)
 	{
-		var u = 'https://' + localStorage._user_sid + ':' + localStorage._auth_tid + '@api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/SMS/Messages.json';
-		u += '?Page=0&PageSize=10';
-		window.console && console.log('ctp.text_list(' + u + ')');
-		$.get(u,cb);
+		// var u = 'https://' + localStorage._user_sid + ':' + localStorage._auth_tid + '@api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/SMS/Messages.json';
+		// u += '?Page=0&PageSize=10';
+		// window.console && console.log('ctp.text_list(' + u + ')');
+		// $.get(u,cb);
+
+		// Actual Numbers
+		var xhr = $.ajax({
+			type: 'GET',
+			url: 'https://api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/SMS/Messages.json?Page=0&PageSize=20',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader("Authorization", "Basic " + btoa(localStorage._user_sid + ':' + localStorage._auth_tid));
+			},
+			success: cb
+		});
+
+		// function(body, stat) {
+		// 	var sms_list = body.applications;
+		// 	var idx = 0;
+		// 	var max = app_list.length;
+		// 	for (idx = 0; idx<max; idx++) {
+		// 		ApplicationList.push(app_list[idx]);
+		// 	}
+		// }
+	},
+
+	/**
+	 * Fetches the IncomingNumbers from Twilio to populate the outgoing caller id list
+	 * @return void
+	 */
+	getApplicationList()
+	{
+		ApplicationList = [];
+
+		// Applications
+		var xhr = $.ajax({
+			type: 'GET',
+			url: 'https://api.twilio.com/2010-04-01/Accounts/' + localStorage._user_sid + '/Applications.json',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader("Authorization", "Basic " + btoa(localStorage._user_sid + ':' + localStorage._auth_tid));
+			},
+			success: function(body, stat) {
+				var app_list = body.applications;
+				var idx = 0;
+				var max = app_list.length;
+				for (idx = 0; idx<max; idx++) {
+					ApplicationList.push(app_list[idx]);
+				}
+			}
+		});
+
 	},
 
 	/**
@@ -381,14 +435,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		ctp.stat('fail', Color.Red,e.message);
 
 		twilioChannel = null;
-		twilioSession = null;
+		twilioSession.token = null;
 
-		window.setTimeout(function() {
-			ctp.init();
-		}, 2000);
+		// window.setTimeout(function() {
+		// 	ctp.init();
+		// }, 2000);
 
 	});
 });
+
+// What is all this about?
 
 var cmp = {
 	type: 'normal',

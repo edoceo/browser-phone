@@ -86,14 +86,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		$('#outgoing-text-form').hide();
 		$('#_ctp_text_send').attr('disabled',true);
 		bgp.ctp.text_list(function(res,ret,jhr) {
+			var h = '';
 			if (res.sms_messages) {
-				var h = '<table>';
 				for (var i in res.sms_messages) {
 					var m = res.sms_messages[i];
-					h += '<tr><td>' + m.from + '</td><td>' + m.to + '</td></tr>';
-					h += '<tr><td colspan="3">' + m.body + '</td></tr>';
+					h += '<div class="mb-1">';
+					h += '<div><strong>' + m.from + '</strong> =&gt; ' + m.to + '</div>';
+					h += '<div>' + m.body + '</div>';
+					h += '<div>(R)</div>'
+					h += '</div>';
 				}
-				h += '</table>';
 			}
 			$('#_ctp_info').hide();
 			$('#outgoing-text-form').html(h);

@@ -4,9 +4,44 @@
 
 var bgp = chrome.extension.getBackgroundPage();
 
-var cto = {
+var VBX_Options = {
 
 	t: null,
+
+	init: function()
+	{
+		$('#_ctp_user_sid').val(bgp.getData('_user_sid'));
+		$('#_ctp_auth_tid').val(bgp.getData('_auth_tid'));
+		$('#_ctp_plug_did').val(bgp.getData('_plug_did'));
+		$('#_ctp_open_url').val(bgp.getData('_open_url'));
+
+		$('#_ctp_bell_i').attr('checked',bgp.getData('bell_i'));
+		$('#_ctp_bell_t').attr('checked',bgp.getData('bell_o'));
+		$('#_ctp_bell_o').attr('checked',bgp.getData('bell_t'));
+
+		$('#_ctp_sess_uid').val(bgp.twilioSession.token);
+
+		// Plivo Options
+		$('#plivo-aid').val(bgp.getData('plivo-aid'));
+		$('#plivo-key').val(bgp.getData('plivo-key'));
+		$('#plivo-username').val(bgp.getData('plivo-username'));
+		$('#plivo-password').val(bgp.getData('plivo-password'));
+
+		if (bgp.ApplicationList.length) {
+			$('#_ctp_prog_sid').append('<option>- Choose One -</option>');
+			bgp.ApplicationList.forEach(function(n, i) {
+				$('#_ctp_prog_sid').append('<option value="' + n.sid + '">' + n.friendly_name + '</option>');
+			});
+		}
+		$('#_ctp_prog_sid').val(bgp.getData('_prog_sid'));
+
+		var warn = bgp.getData('_option_warn');
+		if (warn) {
+			$('#alert-wrap').append('<div class="alert alert-warning">' + warn + '</div>');
+			bgp.setData('_option_warn', '');
+		}
+
+	},
 
 	// Save Function
 	save: function()
@@ -27,8 +62,9 @@ var cto = {
 		bgp.setData('plivo-username', $('#plivo-username').val());
 		bgp.setData('plivo-password', $('#plivo-password').val());
 
-
 		$('input[type=text]').removeClass('diff');
+
+		bgp.ctp.init();
 
 	}
 };
@@ -37,17 +73,26 @@ var cto = {
 document.addEventListener("DOMContentLoaded", function () {
 
 	$('#btn-media-access').on('click', function() {
-		navigator.webkitGetUserMedia({audio: true, video: false}, function(e) {
-			bgp.setData('mic-access', 'good');
-			bgp.setData('mic-access-note', 'Access Granted!');
-		}, function(e) {
-			//switch (e.code) {
-			//case 0: // Permission
+		navigator.webkitGetUserMedia({audio: true, video: false},
+			function(e) {
+				// Pass Routine
+				bgp.setData('mic-access', 'good');
+				bgp.setData('mic-access-note', 'Access Granted!');
+				$('#account-twilio').show();
+				$('#account-plivo').show();
+			},
+			function(e) {
+				// Fail Routine
+				//switch (e.code) {
+				//case 0: // Permission
 				bgp.setData('mic-access-note', e.message);
 				$('#media-access-info').html(e.message);
+				$('#account-twilio').hide();
+				$('#account-plivo').hide();
 				break;
-			//}
-		});
+				//}
+			}
+		);
 	});
 
 	var x = bgp.getData('mic-access-note');
@@ -55,40 +100,26 @@ document.addEventListener("DOMContentLoaded", function () {
 		$('#media-access-info').html(x);
 	}
 
+	x = bgp.getData('mic-access');
+	if ('good' === x) {
+		$('#media-access-info').removeClass('btn-outline-secondary');
+		$('#media-access-info').addClass('btn-success');
+		$('#account-twilio').show();
+		$('#account-plivo').show();
+	}
 
-	$('#_ctp_user_sid').val(bgp.getData('_user_sid'));
-	$('#_ctp_auth_tid').val(bgp.getData('_auth_tid'));
-	$('#_ctp_prog_sid').val(bgp.getData('_prog_sid'));
-	$('#_ctp_plug_did').val(bgp.getData('_plug_did'));
-	$('#_ctp_open_url').val(bgp.getData('_open_url'));
-
-	$('#_ctp_bell_i').attr('checked',bgp.getData('bell_i'));
-	$('#_ctp_bell_t').attr('checked',bgp.getData('bell_o'));
-	$('#_ctp_bell_o').attr('checked',bgp.getData('bell_t'));
-
-	$('#_ctp_sess_uid').val(bgp.twilioSession.token);
-	$('#_ctp_cmd_init').on('click', function() {
-		bgp.ctp.init();
-	});
-
-	// Plivo Options
-	$('#plivo-aid').val(bgp.getData('plivo-aid'));
-	$('#plivo-key').val(bgp.getData('plivo-key'));
-	$('#plivo-username').val(bgp.getData('plivo-username'));
-	$('#plivo-password').val(bgp.getData('plivo-password'));
+	VBX_Options.init();
 
 	$('input[type=text], input[type=checkbox]').on('keyup',function(e) {
 
 		$(this).addClass('diff');
-		if (cto.t) window.clearTimeout(cto.t);
-		cto.t = window.setTimeout(cto.save, 250);
+		if (VBX_Options.t) window.clearTimeout(VBX_Options.t);
+		VBX_Options.t = window.setTimeout(VBX_Options.save, 250);
 
 	});
 
-	var warn = bgp.getData('_option_warn');
-	if (warn) {
-		$('#warn').html(warn);
-		bgp.setData('_option_warn', false);
-	}
+	$('#_ctp_cmd_init').on('click', function() {
+		bgp.ctp.init();
+	});
 
 });

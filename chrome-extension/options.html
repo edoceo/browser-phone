@@ -9,7 +9,7 @@
 </head>
 <body class="options">
 
-<div class="container mt-4">
+<div class="container mt-4" id="alert-wrap">
 	<p class="alert alert-info">Input the information here, data is automatically saved, just close this tab when done.</p>
 </div>
 
@@ -19,30 +19,30 @@
 	<h2>Media Access</h2>
 	<p>Browser Phone needs access to your microphone to be able to make and receive calls</p>
 </div>
-<div class="col-md-3">
-	<button class="btn btn-outline-primary" id="btn-media-access">Check Microphone Access</button>
+<div class="col-md-4">
+	<button class="btn btn-outline-primary" id="btn-media-access">Enable Microphone Access</button>
 </div>
-<div class="col-md-3">
+<div class="col-md-2">
 	<button class="btn btn-outline-secondary" disabled id="media-access-info">Status ????</button>
 </div>
 </div>
 </div>
 
-<div class="container mt-2">
+<div class="container mt-2 collapse" id="account-twilio">
 <div class="card">
 <div class="card-header"><h2>Twilio Account Information</h2></div>
 <div class="card-body">
 	<div class="row">
-		<div class="col">
+		<div class="col-md-6">
 			<label>Account SID</label>
 			<input class="form-control" id="_ctp_user_sid" name="_ctp_user_sid" type="text" value="">
 		</div>
-		<div class="col">
+		<div class="col-md-6">
 			<label>Auth Token</label>
 			<input class="form-control" id="_ctp_auth_tid" name="_ctp_auth_tid" type="text" value="">
 		</div>
 	</div>
-	<p>These two options can be found on your <a href="https://www.twilio.com/user/account" target="_blank">Twilio Dashboard</a>.</p>
+	<p>These two options can be found on your <a href="https://www.twilio.com/user/account?utm_source=vbx.io" target="_blank">Twilio Dashboard</a>.</p>
 
 	<h3>Application Details</h3>
 	<div class="row">
@@ -50,13 +50,15 @@
 			<div class="form-group">
 				<label>Device ID</label>
 				<input class="form-control" id="_ctp_plug_did" name="_ctp_plug_did" type="text" value="">
-				<p>This will become the common name of this device running this plug-in.</p>
+				<p>This will become the common name of this device running this plug-in and what is used for the <em>&lt;Dial&gt;</em> verb in TwiML</p>
 			</div>
 		</div>
 		<div class="col">
 			<div class="form-group">
-				<label>Application SID</label>
-				<input class="form-control" id="_ctp_prog_sid" name="_ctp_prog_sid" type="text" value="">
+				<label>Outgoing Application</label>
+				<!-- <input class="form-control" id="_ctp_prog_sid" name="_ctp_prog_sid" type="text" value=""> -->
+				<select class="form-control" id="_ctp_prog_sid" name="_ctp_prog_sid">
+				</select>
 				<p>Collect the SID from <strong>your</strong> <a href="https://www.twilio.com/console/voice/runtime/twiml-apps" target="_blank">Twilio Application</a> and input it here.</p>
 			</div>
 		</div>
@@ -102,7 +104,7 @@
 </div>
 </div>
 
-<div class="container mt-2">
+<div class="container mt-2 collapse" id="account-plivo">
 <div class="card">
 <div class="card-header"><h2>Plivo Account Information</h2></div>
 <div class="card-body">
@@ -116,7 +118,7 @@
 			<input class="form-control" id="plivo-key" type="text" value="">
 		</div>
 	</div>
-	<p>These two options can be found on your <a href="https://console.plivo.com/dashboard/" target="_blank">Plivo Dashboard</a>.</p>
+	<p>These two options can be found on your <a href="https://manage.plivo.com/dashboard/?utm_source=vbx.io" target="_blank">Plivo Dashboard</a>.</p>
 
 	<h3>Endpoint Details</h3>
 	<div class="row">

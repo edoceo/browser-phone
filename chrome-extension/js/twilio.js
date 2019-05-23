@@ -7,4 +7,5 @@ var twilioSession = {
 	token: 'none',
 };
 
+var ApplicationList = [];
 var NumberList = [];
