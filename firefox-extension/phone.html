@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="vendor/bootstrap.min.css">
+<link rel="stylesheet" href="css/base.css">
+<script type="text/javascript" src="vendor/zepto.min.js"></script>
+<script type="text/javascript" src="js/phone.js"></script>
+<title>Browser Phone - Popup</title>
+</head>
+<body class="popup">
+
+<h1 id="status" style="background: #101010; color: #f0f0f0;"></h1>
+
+<div class="container" id="configure" style="display:none;">
+	<h2>Configuration Needed</h2>
+	<button class="btn btn-lg btn-block btn-primary" id="btn-configure">Open Options</button>
+</div>
+
+
+<div style="border: 1px solid #f00;">
+	<div id="_ctp_info"></div>
+</div>
+
+<button class="btn btn-block btn-outline-primary" id="btn-media-access">Media Access</button>
+
+
+<!-- Incoming Call -->
+<div class="container" id="incoming-form">
+	<h2>Call From: <a href="" id="_take_link" target="_blank"></a></h2>
+	<div>
+		<button class="btn btn-primary" id="call-answer" type="button">Answer</button>
+		<button class="btn btn-outline-secondary" id="call-ignore" type="button">Ignore</button>
+	</div>
+</div>
+
+
+<!-- Outgoing Call -->
+<div class="container mt-2" id="outgoing-call-form">
+<div class="form-group">
+	<label>Calling From:</label>
+	<select class="form-control" id="outgoing-number-list"></select>
+</div>
+<div class="form-group">
+	<label>Outgoing Dial:</label>
+	<div class="input-group">
+		<input class="form-control" id="_ctp_call_dial" name="_ctp_dial" type="text" value="">
+		<div class="input-group-append">
+			<button class="btn btn-outline-secondary" id="_ctp_call_call" type="button" value="call">Call</button>
+			<button class="btn btn-outline-danger" disabled id="_ctp_call_kill" type="button" value="Hang Up">Hang Up</button>
+		</div>
+	</div>
+</div>
+</div>
+
+
+<!-- Button Pad -->
+<div class="container" id="_ctp_dial_pad">
+	<div class="row">
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="1" id="button1"></div>
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="2" id="button2"></div>
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="3" id="button3"></div>
+	</div>
+	<div class="row">
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="4" id="button4"></div>
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="5" id="button5"></div>
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="6" id="button6"></div>
+	</div>
+	<div class="row">
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="7" id="button7"></div>
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="8" id="button8"></div>
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="9" id="button9"></div>
+	</div>
+	<div class="row">
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="*" id="buttonS"></div>
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="0" id="button0"></div>
+		<div class="col"><input class="btn btn-block btn-outline-secondary" type="button" value="#" id="buttonO"></div>
+	</div>
+</div>
+
+<!--
+<div>
+<input id="_ctp_call" name="_ctp_exec" type="button" value="Call">
+<input name="_ctp_exec" onclick="bgp.ctp.kill();" type="button" value="Kill">
+</div>
+-->
+
+
+<!-- Outgoing Text -->
+<div class="container mt-2" id="outgoing-text-form">
+<label>Send a Text</label>
+<div class="input-group">
+	<textarea class="form-control" id="_ctp_text_body" name="msg" placeholder="Message"></textarea>
+	<div class="input-group-append">
+		<button class="btn btn-outline-primary" id="_ctp_text_send" type="submit" value="send">Send</button>
+	</div>
+</div>
+<!--
+	<div>
+		<input id="_ctp_text_send" type="button" value="Send">
+		<input id="_ctp_text_list" type="button" value="Last 10">
+		<input id="logs-list" type="button" value="Logs">
+	</div>
+-->
+</div>
+
+</body>
+</html>

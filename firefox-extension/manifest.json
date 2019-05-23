@@ -1,29 +1,38 @@
 {
-
-  "manifest_version": 2,
-  "name": "VBX Browser Phone",
-  "version": "2019.01.13",
-  "description": "Adds a red border to all webpages matching mozilla.org.",
-  "applications": {
-    "gecko": {
-      "id": "firefox-ext@vbx.io"
-    }
-  },
-  "icons": {
-    "48": "icons/border-48.png"
-  },
-  "browser_action": {
-    "default_icon": {
-      "19": "button/geo-19.png",
-      "38": "button/geo-38.png"
-    },
-    "default_title": "Whereami?"
-  }
-  "content_scripts": [
-    {
-      "matches": ["*://*.mozilla.org/*"],
-      "js": ["borderify.js"]
-    }
-  ]
-
+	"name": "VBX Browser Phone",
+	"description": "Enables a Twilio or Plivo Client",
+	"version": "2019.01.13",
+	"manifest_version": 2,
+	"homepage_url": "http://vbx.io/browser-phone",
+	"applications": {
+		"gecko": {
+			"id": "firefox@vbx.io"
+		}
+	},
+	"icons": {
+		"16":"img/icon16.png",
+		"48":"img/icon48.png",
+		"128":"img/icon128.png"
+	},
+	"content_security_policy": "media-src 'self' https://media.twiliocdn.com https://eventgw.twilio.com; object-src 'self'; script-src 'self' 'unsafe-eval' https://media.twiliocdn.com https://eventgw.twilio.com https://cdn.plivo.com;",
+	"permissions": [
+		"activeTab",
+		"tabs"
+	],
+	"background": {
+		"page": "background.html"
+	},
+	"browser_action": {
+		"browser_style": false,
+		"default_area": "navbar",
+		"default_icon": {
+			"19": "img/icon19.png",
+			"38": "img/icon38.png"
+		},
+		"default_title": "VBX Phone"
+	},
+	"options_ui": {
+		"page": "options.html",
+		"browser_style": true
+	}
 }
