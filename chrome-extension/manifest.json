@@ -1,11 +1,11 @@
 {
 	"name": "VBX Browser Phone",
 	"short_name": "Browser Phone",
-	"description": "Enables a Twilio or Plivo Client",
-	"version": "2019.01.13",
+	"description": "Enables a Twilio or Plivo Phone in the browser",
+	"version": "2019.05.21",
 	"manifest_version": 2,
 	"minimum_chrome_version": "40.0.0",
-	"homepage_url": "http://vbx.io/browser-phone",
+	"homepage_url": "https://vbx.io/browser-phone",
 	"offline_enabled": false,
 	"incognito": "not_allowed",
 	"icons": {
@@ -26,7 +26,7 @@
 			"128": "img/icon128.png"
 		},
 		"default_popup": "popup.html",
-		"default_title": "Browser Phone"
+		"default_title": "VBX Browser Phone"
 	},
 	"options_page": "options.html",
 	"permissions": [
